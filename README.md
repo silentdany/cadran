@@ -1,10 +1,29 @@
 # Cadran
 
-Séance cognitive maison, en français ou en anglais. Quatre axes — langage, formes, mémoire, rythme — en une vingtaine de minutes. La séance se sauvegarde dans le navigateur, tu peux t'arrêter entre les blocs.
+A short cognitive session in French or English: four areas (language, shapes, memory, rhythm) in about 20 minutes. Everything stays in the browser's localStorage, and you can stop between blocks.
 
-Ce n'est pas le WAIS-IV. Les items sont originaux, les scores ne sont pas étalonnés. Pour un vrai bilan, un psychologue.
+The items are original and the scores are not normed. It is a homemade estimate, not a clinical assessment.
+
+Live at [cadran.cura.dev](https://cadran.cura.dev).
+
+## Stack
+
+TanStack Start, React 19, TypeScript, Vite, Tailwind CSS 4. Built with the Nitro `vercel` preset.
+
+## Develop
 
 ```bash
-npm install
-npm run dev
+npm ci
+npm run dev        # http://localhost:8080
+npm test           # vitest
+npm run typecheck
+npm run lint
+npm run build      # also renders public/og-fr.png and public/og-en.png
 ```
+
+## Layout
+
+- `src/lib/battery/` items, scoring, copy (FR and EN)
+- `src/components/cadran/` screens and figure tiles
+- `src/lib/seo.ts` per-locale metadata
+- `scripts/og.mjs` share images, rendered from SVG
