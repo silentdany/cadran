@@ -114,7 +114,12 @@ export const copy = {
       { name: "Rythme", text: "Vitesse et précision" },
     ],
     homeKicker: "Séance cognitive",
-    tagline: (n: number) => `Quatre axes, environ ${n} minutes. Une photo de comment tu raisonnes aujourd'hui — pas un diagnostic.`,
+    // `accent` is set in Instrument Serif italic: one accent word per screen at most.
+    tagline: (n: number) => ({
+      before: `Quatre axes, environ ${n} minutes. Une photo de comment tu raisonnes `,
+      accent: "aujourd'hui",
+      after: " — pas un diagnostic.",
+    }),
     disclaimer:
       "Même logique qu'un bilan en quatre axes, items originaux. Ce n'est pas le WAIS-IV et les scores ne sont pas étalonnés. Pour un vrai bilan, un psychologue.",
     totalNote: (n: number) => `Total ${n} min. Tu peux t'arrêter entre les blocs, la séance reste sur cet appareil.`,
@@ -193,7 +198,11 @@ export const copy = {
       { name: "Pace", text: "Speed and accuracy" },
     ],
     homeKicker: "Cognitive session",
-    tagline: (n: number) => `Four axes, about ${n} minutes. A snapshot of how you reason today — not a diagnosis.`,
+    tagline: (n: number) => ({
+      before: `Four axes, about ${n} minutes. A snapshot of how you reason `,
+      accent: "today",
+      after: " — not a diagnosis.",
+    }),
     disclaimer:
       "Same four-axis logic, original items. This is not the WAIS-IV and the scores are not normed. For a real assessment, see a psychologist.",
     totalNote: (n: number) => `Total ${n} min. You can stop between blocks. The session stays on this device.`,

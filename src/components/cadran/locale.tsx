@@ -40,17 +40,24 @@ export function useLocale() {
 export function LangSwitch() {
   const { locale, setLocale } = useLocale();
   return (
-    <div className="inline-flex shrink-0 rounded-full border border-line bg-sheet p-0.5 text-xs font-medium" role="group" aria-label={locale === "fr" ? "Langue" : "Language"}>
-      {(["fr", "en"] as const).map((code) => (
-        <button
-          key={code}
-          type="button"
-          onClick={() => setLocale(code)}
-          aria-pressed={locale === code}
-          className={"rounded-full px-2.5 py-1 uppercase " + (locale === code ? "bg-ink text-paper" : "text-muted")}
-        >
-          {code}
-        </button>
+    <div className="flex items-center gap-2 text-sm" role="group" aria-label={locale === "fr" ? "Langue" : "Language"}>
+      {(["fr", "en"] as const).map((code, i) => (
+        <span key={code} className="flex items-center gap-2">
+          {i > 0 && (
+            <span className="text-line" aria-hidden="true">
+              ·
+            </span>
+          )}
+          <button
+            type="button"
+            lang={code}
+            onClick={() => setLocale(code)}
+            aria-pressed={locale === code}
+            className={"uppercase " + (locale === code ? "font-semibold text-ink" : "text-muted hover:text-ink")}
+          >
+            {code}
+          </button>
+        </span>
       ))}
     </div>
   );

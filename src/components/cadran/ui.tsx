@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { LangSwitch, useLocale } from "@/components/cadran/locale";
+import { useLocale } from "@/components/cadran/locale";
 
 /** Number of blocks in a session: one tick per block on the progress line. */
 const BLOCKS = 8;

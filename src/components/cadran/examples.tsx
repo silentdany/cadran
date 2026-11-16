@@ -19,11 +19,16 @@ function Line({ letter, text, right }: { letter: string; text: string; right?: b
     <div
       className={
         "flex items-center gap-2 rounded-lg border px-3 py-2 text-sm " +
-        (right ? "border-ink bg-ink text-paper" : "border-line bg-paper")
+        (right ? "border-(--color-right) bg-right-soft text-ink" : "border-line bg-paper")
       }
     >
-      <span className={"w-4 shrink-0 text-xs " + (right ? "text-paper" : "text-muted")}>{letter}</span>
-      <span>{text}</span>
+      <span className="numeric w-4 shrink-0 text-xs text-muted">{letter}</span>
+      <span className="flex-1">{text}</span>
+      {right && (
+        <span className="font-semibold text-(--color-right)" aria-hidden="true">
+          ✓
+        </span>
+      )}
     </div>
   );
 }

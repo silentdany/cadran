@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { BookOpen, Brain, Gauge, Shapes } from "lucide-react";
 import { MATRICES, SENS, SIMILITUDES, SUITES } from "@/lib/battery/marks";
 import { SENS_EN, SIMILITUDES_EN } from "@/lib/battery/items-en";
 import { bandKey, percentile, profileFrom, type RawParts } from "@/lib/battery/score";
@@ -12,13 +11,6 @@ import { SpeedRun } from "@/components/cadran/speed-run";
 import { GhostButton, PrimaryButton } from "@/components/cadran/ui";
 import { LangSwitch, useLocale } from "@/components/cadran/locale";
 import { BlockExample } from "@/components/cadran/examples";
-
-const AXES = [
-  { icon: BookOpen, name: "Langage", text: "Concepts et définitions" },
-  { icon: Shapes, name: "Formes", text: "Logique visuelle" },
-  { icon: Brain, name: "Mémoire", text: "Retenir et manipuler" },
-  { icon: Gauge, name: "Rythme", text: "Vitesse et précision" },
-] as const;
 
 const STEPS = [
   { id: "sim", kicker: "Axe 1 · Langage", title: "Similitudes", minutes: 2, body: "Deux mots. Choisis ce qu'ils ont vraiment en commun : l'idée générale, pas un détail." },
@@ -149,36 +141,39 @@ export function CadranApp() {
   const progress = Math.round((step / STEPS.length) * 100);
 
   if (phase === "home") {
+    const tagline = t.tagline(TOTAL_MINUTES);
     return (
-      <main className="mx-auto flex min-h-screen w-full max-w-xl flex-col px-5 py-10">
+      <main className="mx-auto flex min-h-screen w-full max-w-[560px] flex-col px-5 pb-8 pt-5 sm:pt-12">
         <div className="flex items-center justify-between gap-3">
           <p className="label">{t.homeKicker}</p>
           <LangSwitch />
         </div>
-        <h1 className="mt-2 font-display text-5xl text-ink">Cadran</h1>
-        <p className="mt-4 max-w-lg text-lg text-muted">{t.tagline(TOTAL_MINUTES)}</p>
-        <p className="mt-3 max-w-lg text-sm text-muted">{t.disclaimer}</p>
-        <ul className="mt-8 grid grid-cols-2 gap-3">
-          {AXES.map((axe, i) => (
-            <li key={axe.name} className="rounded-2xl border border-line bg-sheet p-4">
-              <axe.icon className="h-5 w-5 text-ink" aria-hidden="true" />
-              <p className="mt-3 font-medium">{t.axes[i]?.name}</p>
-              <p className="text-sm text-muted">{t.axes[i]?.text}</p>
+        <h1 className="mt-4 font-display text-[56px] leading-none tracking-[-0.01em] text-ink sm:text-[72px]">Cadran</h1>
+        <p className="mt-4 text-muted">
+          {tagline.before}
+          <em className="font-display text-[1.1em] text-ink italic">{tagline.accent}</em>
+          {tagline.after}
+        </p>
+        <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3">
+          {t.axes.map((axe) => (
+            <li key={axe.name}>
+              <p className="label">{axe.name}</p>
+              <p className="mt-1 text-sm text-muted">{axe.text}</p>
             </li>
           ))}
         </ul>
-        <ul className="mt-8 divide-y divide-line border-y border-line">
+        <ul className="mt-4 divide-y divide-line border-y border-line">
           {steps.map((item) => (
             <li key={item.id} className="flex items-baseline justify-between gap-3 py-2 text-sm">
               <span>{item.title}</span>
-              <span className="shrink-0 tabular-nums text-muted">
+              <span className="numeric shrink-0 text-muted">
                 {item.minutes} {t.minutes}
               </span>
             </li>
           ))}
         </ul>
         <p className="mt-3 text-sm text-muted">{t.totalNote(TOTAL_MINUTES)}</p>
-        <div className="mt-8 flex flex-col gap-2">
+        <div className="mt-6 flex flex-col gap-2">
           {draft && (
             <PrimaryButton onClick={resume}>
               {t.resume(steps[draft.step]?.title ?? t.session, remainingMinutes(draft.step))}
@@ -191,15 +186,17 @@ export function CadranApp() {
           )}
           {draft && <GhostButton onClick={abandon}>{t.discard}</GhostButton>}
         </div>
+        <p className="mt-4 text-sm text-muted">{t.disclaimer}</p>
         {history.length > 0 && (
           <section className="mt-10">
-            <h2 className="font-display text-2xl">{t.past}</h2>
+            <h2 className="font-display text-[32px] leading-none">{t.past}</h2>
             <ul className="mt-3 divide-y divide-line border-y border-line">
               {history.slice(0, 6).map((s) => (
-                <li key={s.id} className="flex items-baseline justify-between py-3">
+                <li key={s.id} className="flex items-baseline justify-between gap-3 py-3">
                   <span className="text-sm text-muted">{formatWhen(s.at, t.localeTag)}</span>
-                  <span className="font-medium tabular-nums">
-                    {s.global} <span className="text-sm font-normal text-muted">{t.bands[bandKey(s.global)]}</span>
+                  <span className="text-right">
+                    <span className="numeric">{s.global}</span>{" "}
+                    <span className="text-sm text-muted">{t.bands[bandKey(s.global)]}</span>
                   </span>
                 </li>
               ))}
@@ -212,17 +209,17 @@ export function CadranApp() {
 
   if (phase === "intro" && current) {
     return (
-      <main className="mx-auto flex min-h-screen w-full max-w-xl flex-col px-5 py-10">
+      <main className="mx-auto flex min-h-screen w-full max-w-[560px] flex-col px-5 pb-10 pt-5 sm:pt-12">
         <div className="flex items-center justify-between gap-3">
           <p className="label">{current.kicker}</p>
           <LangSwitch />
         </div>
-        <p className="mt-6 text-sm text-muted">{t.block(step + 1, steps.length, current.minutes, remainingMinutes(step))}</p>
-        <h1 className="mt-2 font-display text-4xl">{current.title}</h1>
-        <p className="mt-4 text-lg text-muted">{current.body}</p>
+        <p className="numeric mt-6 text-sm text-muted">{t.block(step + 1, steps.length, current.minutes, remainingMinutes(step))}</p>
+        <h1 className="mt-2 font-display text-[40px] leading-none tracking-[-0.01em]">{current.title}</h1>
+        <p className="mt-4 text-muted">{current.body}</p>
         <BlockExample id={current.id} />
         <p className="mt-4 text-sm text-muted">{t.pauseHint}</p>
-        <div className="mt-8 flex flex-col gap-2">
+        <div className="mt-6 flex flex-col gap-2">
           <PrimaryButton onClick={() => setPhase("run")}>{t.gotIt}</PrimaryButton>
           <GhostButton onClick={pause}>{t.pauseLong}</GhostButton>
         </div>
@@ -311,13 +308,13 @@ export function CadranApp() {
     const delta = result.global - (baseline?.global ?? result.global);
     const deltaLabel = `${delta > 0 ? "+" : ""}${baseline ? delta : 0}`;
     return (
-      <main className="mx-auto flex min-h-screen w-full max-w-xl flex-col px-5 py-10">
+      <main className="mx-auto flex min-h-screen w-full max-w-[560px] flex-col px-5 pb-10 pt-5 sm:pt-12">
         <div className="flex items-center justify-between gap-3">
           <p className="label">{t.profile}</p>
           <LangSwitch />
         </div>
-        <h1 className="mt-2 font-display text-5xl tabular-nums">{result.global}</h1>
-        <p className="text-lg text-muted">{t.percentile(t.bands[bandKey(result.global)], percentile(result.global))}</p>
+        <h1 className="mt-4 font-display text-[72px] leading-none tracking-[-0.01em] tabular-nums">{result.global}</h1>
+        <p className="mt-2 text-muted">{t.percentile(t.bands[bandKey(result.global)], percentile(result.global))}</p>
         {baseline && (
           <p className="mt-2 text-sm text-muted">{t.compared(formatWhen(baseline.at, t.localeTag), baseline.global, deltaLabel)}</p>
         )}
@@ -335,8 +332,8 @@ export function CadranApp() {
             return (
               <li key={row.key}>
                 <div className="flex items-baseline justify-between">
-                  <span className="font-medium">{row.name}</span>
-                  <span className="tabular-nums">
+                  <span className="label">{row.name}</span>
+                  <span className="numeric">
                     {row.value}
                     {prev !== null && (
                       <span className="ml-2 text-sm text-muted">
@@ -346,8 +343,10 @@ export function CadranApp() {
                     )}
                   </span>
                 </div>
-                <div className="mt-2 h-2 overflow-hidden rounded-full bg-line">
-                  <div className="h-full rounded-full bg-needle" style={{ width: `${((row.value - 55) / 90) * 100}%` }} />
+                {/* Ink bars: the needle colour is kept for the main button on this screen. */}
+                <div className="relative mt-2 h-0.5 bg-line">
+                  <div className="absolute inset-y-0 left-0 bg-ink" style={{ width: `${((row.value - 55) / 90) * 100}%` }} />
+                  <span className="absolute -top-[3px] left-1/2 block h-2 w-px bg-muted" aria-hidden="true" />
                 </div>
                 <p className="mt-1 text-sm text-muted">{t.bands[bandKey(row.value)]}</p>
               </li>
@@ -358,33 +357,33 @@ export function CadranApp() {
           <summary className="cursor-pointer font-medium">{t.details}</summary>
           <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
             <dt className="text-muted">{t.steps.sim.title}</dt>
-            <dd className="text-right tabular-nums">
+            <dd className="numeric text-right">
               {result.raw.sim} {t.points}
             </dd>
             <dt className="text-muted">{t.steps.sens.title}</dt>
-            <dd className="text-right tabular-nums">
+            <dd className="numeric text-right">
               {result.raw.sens} {t.points}
             </dd>
             <dt className="text-muted">{t.steps.mat.title}</dt>
-            <dd className="text-right tabular-nums">
+            <dd className="numeric text-right">
               {result.raw.mat} {t.points}
             </dd>
             <dt className="text-muted">{t.steps.suite.title}</dt>
-            <dd className="text-right tabular-nums">
+            <dd className="numeric text-right">
               {result.raw.suite} {t.points}
             </dd>
             <dt className="text-muted">{t.spanDetail}</dt>
-            <dd className="text-right tabular-nums">
+            <dd className="numeric text-right">
               {result.raw.fwd} / {result.raw.bwd}
             </dd>
             <dt className="text-muted">{t.steps.calc.title}</dt>
-            <dd className="text-right tabular-nums">
+            <dd className="numeric text-right">
               {result.raw.calc} {t.points}
             </dd>
             <dt className="text-muted">{t.scanDetail}</dt>
-            <dd className="text-right tabular-nums">{result.raw.scan}</dd>
+            <dd className="numeric text-right">{result.raw.scan}</dd>
             <dt className="text-muted">{t.codeDetail}</dt>
-            <dd className="text-right tabular-nums">{result.raw.code}</dd>
+            <dd className="numeric text-right">{result.raw.code}</dd>
           </dl>
         </details>
         <p className="mt-6 text-sm text-muted">{t.footnote}</p>
