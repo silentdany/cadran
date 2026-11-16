@@ -2,8 +2,8 @@ import type { Mark } from "@/lib/battery/marks";
 
 const FILL: Record<Mark["tone"], string> = {
   ink: "var(--color-ink)",
-  copper: "var(--color-copper)",
-  moss: "var(--color-moss)",
+  needle: "var(--color-needle)",
+  blue: "var(--color-blue)",
 };
 
 /** Every figure is drawn in this one coordinate space, series and options alike. */
@@ -139,28 +139,28 @@ export function SymbolMark({ id, className = "h-10 w-10" }: { id: number; classN
       {id % 6 === 0 && (
         <>
           <circle cx="16" cy="20" r="7" fill="none" stroke="var(--color-ink)" strokeWidth="2.4" />
-          <circle cx="24" cy="20" r="7" fill="none" stroke="var(--color-copper)" strokeWidth="2.4" />
+          <circle cx="24" cy="20" r="7" fill="none" stroke="var(--color-needle)" strokeWidth="2.4" />
         </>
       )}
       {id % 6 === 1 && <polygon points="12,30 20,8 28,30" fill="var(--color-ink)" />}
       {id % 6 === 2 && (
         <>
           <rect x="10" y="10" width="20" height="20" rx="3" fill="none" stroke="var(--color-ink)" strokeWidth="2.4" />
-          <rect x="17" y="17" width="6" height="6" fill="var(--color-copper)" />
+          <rect x="17" y="17" width="6" height="6" fill="var(--color-needle)" />
         </>
       )}
       {id % 6 === 3 && (
         <>
           <rect x="8" y="17" width="24" height="6" rx="2" fill="var(--color-ink)" />
-          <rect x="17" y="8" width="6" height="24" rx="2" fill="var(--color-copper)" />
+          <rect x="17" y="8" width="6" height="24" rx="2" fill="var(--color-needle)" />
         </>
       )}
       {id % 6 === 4 && <polygon points="20,7 33,20 20,33 7,20" fill="none" stroke="var(--color-ink)" strokeWidth="2.4" />}
       {id % 6 === 5 && (
         <>
           <rect x="8" y="11" width="24" height="4" rx="1" fill="var(--color-ink)" />
-          <rect x="12" y="18" width="16" height="4" rx="1" fill="var(--color-copper)" />
-          <rect x="16" y="25" width="8" height="4" rx="1" fill="var(--color-moss)" />
+          <rect x="12" y="18" width="16" height="4" rx="1" fill="var(--color-needle)" />
+          <rect x="16" y="25" width="8" height="4" rx="1" fill="var(--color-blue)" />
         </>
       )}
       <title>{d}</title>

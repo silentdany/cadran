@@ -18,7 +18,7 @@ export function Shell({
     <div className="mx-auto flex min-h-screen w-full max-w-xl flex-col px-5 pb-10 pt-5">
       <header className="sticky top-0 z-10 -mx-5 bg-paper/95 px-5 pb-3 pt-2 backdrop-blur">
         <div className="mb-2 flex items-center justify-between gap-3">
-          <p className="truncate text-xs font-medium tracking-widest text-copper uppercase">{kicker}</p>
+          <p className="label truncate">{kicker}</p>
           <div className="flex shrink-0 items-center gap-3">
             <LangSwitch />
             {onPause && (
@@ -30,7 +30,7 @@ export function Shell({
         </div>
         <p className="mb-2 text-xs text-muted">{title}</p>
         <div className="h-1 overflow-hidden rounded-full bg-line">
-          <div className="h-full rounded-full bg-copper transition-all" style={{ width: `${progress}%` }} />
+          <div className="h-full rounded-full bg-needle transition-all" style={{ width: `${progress}%` }} />
         </div>
       </header>
       <div className="flex flex-1 flex-col pt-6">{children}</div>

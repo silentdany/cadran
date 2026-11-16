@@ -131,7 +131,7 @@ export function SpeedRun({
       {mode === "scan" && live && (
         <>
           <div className="mt-4 flex items-center gap-3">
-            <div className="grid h-16 w-16 place-items-center rounded-xl border border-copper bg-copper-soft">
+            <div className="grid h-16 w-16 place-items-center rounded-xl border border-ink bg-needle-soft">
               <SymbolMark id={live.target} />
             </div>
             <div className="grid flex-1 grid-cols-5 gap-1 rounded-xl border border-line bg-sheet p-2">

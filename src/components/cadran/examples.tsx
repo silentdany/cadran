@@ -7,7 +7,7 @@ import { center, dots } from "@/lib/battery/marks";
 function Card({ kicker, children, why }: { kicker: string; children: ReactNode; why: string }) {
   return (
     <section className="mt-6 rounded-2xl border border-line bg-sheet p-4">
-      <p className="text-xs font-medium tracking-widest text-copper uppercase">{kicker}</p>
+      <p className="label">{kicker}</p>
       <div className="mt-3">{children}</div>
       <p className="mt-3 text-sm text-muted">{why}</p>
     </section>
@@ -201,7 +201,7 @@ export function BlockExample({ id }: { id: StepId }) {
         ))}
       </div>
       <div className="mt-3 flex items-center gap-3">
-        <div className="grid h-16 w-16 place-items-center rounded-xl border border-copper bg-paper">
+        <div className="grid h-16 w-16 place-items-center rounded-xl border border-ink/30 border-dashed bg-paper">
           <SymbolMark id={1} />
         </div>
         <p className="text-sm font-medium">{en ? "Type 2" : "Tape 2"}</p>
@@ -213,7 +213,7 @@ export function BlockExample({ id }: { id: StepId }) {
 function ScanRow({ ids, target, label }: { ids: number[]; target: number; label: string }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg border border-copper bg-paper">
+      <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg border border-ink/30 border-dashed bg-paper">
         <SymbolMark id={target} className="h-7 w-7" />
       </div>
       <div className="grid flex-1 grid-cols-5 gap-1 rounded-lg border border-line bg-paper p-1">

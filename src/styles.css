@@ -1,24 +1,35 @@
 @import "tailwindcss";
-@import "@fontsource/fraunces/latin-500.css";
-@import "@fontsource/fraunces/latin-600.css";
-@import "@fontsource/outfit/latin-400.css";
-@import "@fontsource/outfit/latin-500.css";
-@import "@fontsource/outfit/latin-600.css";
+@import "@fontsource/instrument-serif/latin-400.css";
+@import "@fontsource/instrument-serif/latin-400-italic.css";
+@import "@fontsource/geist-sans/latin-400.css";
+@import "@fontsource/geist-sans/latin-500.css";
+@import "@fontsource/geist-sans/latin-600.css";
+@import "@fontsource/geist-mono/latin-500.css";
 
+/* Cadran tokens: a Swiss clock face, one needle colour per screen. */
 @theme {
-  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
-  --font-sans: "Outfit", "Avenir Next", system-ui, sans-serif;
-  --color-paper: #f4efe6;
-  --color-sheet: #fffcf7;
-  --color-ink: #1a1612;
-  --color-muted: #6f675e;
-  --color-line: #e4dcd0;
-  --color-copper: #c4622d;
-  --color-copper-soft: #f6e6da;
-  --color-moss: #2f7d52;
-  --color-moss-soft: #e4f2ea;
-  --color-miss: #a33b32;
-  --radius-card: 1.25rem;
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-sans: "Geist Sans", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+
+  --color-paper: #f4f2ec;
+  --color-sheet: #ffffff;
+  --color-ink: #16181d;
+  --color-muted: #5d626c;
+  --color-line: #dcd8cf;
+  /* The needle: main action, progress, timer. Once per screen. */
+  --color-needle: #d2451e;
+  --color-needle-press: #b23814;
+  --color-needle-soft: #fbe6dd;
+  --color-right: #276b4a;
+  --color-right-soft: #e3f0e8;
+  --color-wrong: #9e2b25;
+  --color-wrong-soft: #f7e2df;
+  /* Third figure tint only (ink, needle, blue stay readable for red-green colour blindness). */
+  --color-blue: #2c5da8;
+
+  --radius-tile: 10px;
+  --radius-card: 16px;
 }
 
 @layer base {
@@ -31,24 +42,42 @@
     background: var(--color-paper);
     color: var(--color-ink);
     min-height: 100vh;
-    line-height: 1.5;
-    text-rendering: optimizeLegibility;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
   }
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
-  button:focus-visible,
-  [role="button"]:focus-visible {
-    outline: 2px solid var(--color-copper);
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
     outline-offset: 3px;
   }
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
     *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
     }
+  }
+}
+
+@layer components {
+  /* Axis and step labels: Geist 600, 12 px, small caps, +6 % tracking. */
+  .label {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1.2;
+    letter-spacing: 0.06em;
+    font-variant-caps: all-small-caps;
+    color: var(--color-muted);
+  }
+  .numeric {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
   }
 }

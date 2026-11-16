@@ -152,7 +152,7 @@ export function CadranApp() {
     return (
       <main className="mx-auto flex min-h-screen w-full max-w-xl flex-col px-5 py-10">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-medium tracking-widest text-copper uppercase">{t.homeKicker}</p>
+          <p className="label">{t.homeKicker}</p>
           <LangSwitch />
         </div>
         <h1 className="mt-2 font-display text-5xl text-ink">Cadran</h1>
@@ -161,7 +161,7 @@ export function CadranApp() {
         <ul className="mt-8 grid grid-cols-2 gap-3">
           {AXES.map((axe, i) => (
             <li key={axe.name} className="rounded-2xl border border-line bg-sheet p-4">
-              <axe.icon className="h-5 w-5 text-copper" aria-hidden="true" />
+              <axe.icon className="h-5 w-5 text-ink" aria-hidden="true" />
               <p className="mt-3 font-medium">{t.axes[i]?.name}</p>
               <p className="text-sm text-muted">{t.axes[i]?.text}</p>
             </li>
@@ -214,7 +214,7 @@ export function CadranApp() {
     return (
       <main className="mx-auto flex min-h-screen w-full max-w-xl flex-col px-5 py-10">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-medium tracking-widest text-copper uppercase">{current.kicker}</p>
+          <p className="label">{current.kicker}</p>
           <LangSwitch />
         </div>
         <p className="mt-6 text-sm text-muted">{t.block(step + 1, steps.length, current.minutes, remainingMinutes(step))}</p>
@@ -313,7 +313,7 @@ export function CadranApp() {
     return (
       <main className="mx-auto flex min-h-screen w-full max-w-xl flex-col px-5 py-10">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-medium tracking-widest text-copper uppercase">{t.profile}</p>
+          <p className="label">{t.profile}</p>
           <LangSwitch />
         </div>
         <h1 className="mt-2 font-display text-5xl tabular-nums">{result.global}</h1>
@@ -347,7 +347,7 @@ export function CadranApp() {
                   </span>
                 </div>
                 <div className="mt-2 h-2 overflow-hidden rounded-full bg-line">
-                  <div className="h-full rounded-full bg-copper" style={{ width: `${((row.value - 55) / 90) * 100}%` }} />
+                  <div className="h-full rounded-full bg-needle" style={{ width: `${((row.value - 55) / 90) * 100}%` }} />
                 </div>
                 <p className="mt-1 text-sm text-muted">{t.bands[bandKey(row.value)]}</p>
               </li>
