@@ -21,13 +21,13 @@ describe.each(["fr", "en"] as const)("%s page head", (locale) => {
   });
 
   it("uses absolute https URLs on the production origin", () => {
-    expect(SITE_URL).toBe("https://cadran.cura.dev");
+    expect(SITE_URL).toBe("https://cadran.accura.dev");
     const canonical = head.links.find((l) => l.rel === "canonical")!.href;
     expect(canonical).toBe(
-      locale === "fr" ? "https://cadran.cura.dev/" : "https://cadran.cura.dev/en",
+      locale === "fr" ? "https://cadran.accura.dev/" : "https://cadran.accura.dev/en",
     );
     expect(meta(head, "og:url")).toBe(canonical);
-    expect(meta(head, "og:image")).toBe(`https://cadran.cura.dev/og-${locale}.png`);
+    expect(meta(head, "og:image")).toBe(`https://cadran.accura.dev/og-${locale}.png`);
     expect(meta(head, "twitter:image")).toBe(meta(head, "og:image"));
   });
 

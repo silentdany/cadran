@@ -4,7 +4,7 @@ A short cognitive session in French or English: four areas (language, shapes, me
 
 The items are original and the scores are not normed. It is a homemade estimate, not a clinical assessment.
 
-Live at [cadran.cura.dev](https://cadran.cura.dev).
+Live at [cadran.accura.dev](https://cadran.accura.dev).
 
 ## Stack
 

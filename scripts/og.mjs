@@ -162,7 +162,7 @@ function card(page) {
               fontSize: 22,
               color: C.muted,
             },
-            "cadran.cura.dev",
+            "cadran.accura.dev",
           ),
           h(
             "div",

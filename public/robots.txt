@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://cadran.cura.dev/sitemap.xml
+Sitemap: https://cadran.accura.dev/sitemap.xml
