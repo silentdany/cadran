@@ -59,7 +59,11 @@ export function pageHead(locale: Locale) {
     ],
     links: [
       { rel: "canonical", href: url },
-      ...LOCALES.map((code) => ({ rel: "alternate", hrefLang: code, href: absoluteUrl(seo[code].path) })),
+      ...LOCALES.map((code) => ({
+        rel: "alternate",
+        hrefLang: code,
+        href: absoluteUrl(seo[code].path),
+      })),
       { rel: "alternate", hrefLang: "x-default", href: absoluteUrl(seo.fr.path) },
     ],
     scripts: [{ type: "application/ld+json", children: JSON.stringify(jsonLd) }],

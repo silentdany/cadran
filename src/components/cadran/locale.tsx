@@ -18,7 +18,13 @@ const LocaleContext = createContext<{
  * copy in place and only rewrite the URL, lang and title, without a router
  * navigation that would remount the app.
  */
-export function LocaleProvider({ locale: initial, children }: { locale: Locale; children: ReactNode }) {
+export function LocaleProvider({
+  locale: initial,
+  children,
+}: {
+  locale: Locale;
+  children: ReactNode;
+}) {
   const [locale, setLocaleState] = useState<Locale>(initial);
 
   useEffect(() => {
@@ -31,7 +37,11 @@ export function LocaleProvider({ locale: initial, children }: { locale: Locale; 
     window.history.replaceState(window.history.state, "", seo[next].path);
   }
 
-  return <LocaleContext.Provider value={{ locale, setLocale, t: copy[locale] }}>{children}</LocaleContext.Provider>;
+  return (
+    <LocaleContext.Provider value={{ locale, setLocale, t: copy[locale] }}>
+      {children}
+    </LocaleContext.Provider>
+  );
 }
 
 export function useLocale() {
@@ -41,7 +51,11 @@ export function useLocale() {
 export function LangSwitch() {
   const { locale, setLocale } = useLocale();
   return (
-    <div className="flex items-center gap-2 text-sm" role="group" aria-label={locale === "fr" ? "Langue" : "Language"}>
+    <div
+      className="flex items-center gap-2 text-sm"
+      role="group"
+      aria-label={locale === "fr" ? "Langue" : "Language"}
+    >
       {(["fr", "en"] as const).map((code, i) => (
         <span key={code} className="flex items-center gap-2">
           {i > 0 && (
@@ -54,7 +68,10 @@ export function LangSwitch() {
             lang={code}
             onClick={() => setLocale(code)}
             aria-pressed={locale === code}
-            className={"uppercase " + (locale === code ? "font-semibold text-ink" : "text-muted hover:text-ink")}
+            className={
+              "uppercase " +
+              (locale === code ? "font-semibold text-ink" : "text-muted hover:text-ink")
+            }
           >
             {code}
           </button>
