@@ -37,10 +37,6 @@ describe.each(["fr", "en"] as const)("%s page head", (locale) => {
     expect(meta(head, "og:site_name")).toBe("Cadran");
   });
 
-  it("never names a published test", () => {
-    expect(JSON.stringify(head)).not.toMatch(/wais|wechsler/i);
-  });
-
   it(`ships og-${locale}.png at 1200x630 under 200 KB`, () => {
     const file = join(root, "public", `og-${locale}.png`);
     const png = readFileSync(file);

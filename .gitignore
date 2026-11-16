@@ -4,10 +4,8 @@ dist
 .vinxi
 .tanstack
 .vercel
-.grok
 screenshots
 artifacts
-.project_id
 *.log
 .env
 .env.*
