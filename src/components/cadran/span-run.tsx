@@ -141,7 +141,7 @@ export function SpanRun({
 
   if (phase.t === "brief") {
     return (
-      <Shell kicker={kicker} title={t.spanTitle} progress={progress} onPause={onPause}>
+      <Shell kicker={kicker} title={t.spanTitle} progress={progress} onPause={onPause} needle="action">
         <h2 className="font-display text-3xl leading-tight">{t.spanHold}</h2>
         <p className="mt-3 text-muted">{t.spanHoldLead}</p>
         <div className="mt-8">
@@ -153,7 +153,7 @@ export function SpanRun({
 
   if (phase.t === "note") {
     return (
-      <Shell kicker={kicker} title={t.spanTitle} progress={progress} onPause={onPause}>
+      <Shell kicker={kicker} title={t.spanTitle} progress={progress} onPause={onPause} needle="action">
         <h2 className="font-display text-3xl leading-tight">{phase.next === "bwd-brief" ? t.reverse : t.going}</h2>
         <p className="mt-3 text-muted">{phase.text}</p>
         <div className="mt-8">
@@ -176,7 +176,7 @@ export function SpanRun({
       <Shell kicker={kicker} title={phase.dir === "fwd" ? t.forward : t.reverse} progress={progress} onPause={onPause}>
         <p className="text-sm text-muted">{phase.practice ? t.trial : t.lengthTrial(phase.length, phase.trial + 1)}</p>
         <div className="grid flex-1 place-items-center">
-          <p className="font-display text-7xl tabular-nums">{phase.on ? phase.seq[phase.i] : ""}</p>
+          <p className="numeric text-7xl">{phase.on ? phase.seq[phase.i] : ""}</p>
         </div>
       </Shell>
     );
@@ -186,8 +186,8 @@ export function SpanRun({
   return (
     <Shell kicker={kicker} title={phase.dir === "fwd" ? t.forward : t.reverse} progress={progress} onPause={onPause}>
       <p className="text-sm text-muted">{phase.dir === "fwd" ? t.typeForward : t.typeBack}</p>
-      <p className="mt-6 min-h-14 font-display text-4xl tracking-widest tabular-nums">{shown || "—"}</p>
-      <p className="mt-2 text-xs text-muted">{t.keyDigits}</p>
+      <p className="numeric mt-6 min-h-14 text-4xl tracking-widest">{shown || "—"}</p>
+      <p className="mt-2 text-sm text-muted">{t.keyDigits}</p>
       <div className="mt-auto pt-6">
         <Keypad
           withZero={false}

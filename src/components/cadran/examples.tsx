@@ -7,7 +7,7 @@ import { center, dots } from "@/lib/battery/marks";
 function Card({ kicker, children, why }: { kicker: string; children: ReactNode; why: string }) {
   return (
     <section className="mt-6 rounded-2xl border border-line bg-sheet p-4">
-      <p className="text-xs font-medium tracking-widest text-copper uppercase">{kicker}</p>
+      <p className="label">{kicker}</p>
       <div className="mt-3">{children}</div>
       <p className="mt-3 text-sm text-muted">{why}</p>
     </section>
@@ -19,11 +19,16 @@ function Line({ letter, text, right }: { letter: string; text: string; right?: b
     <div
       className={
         "flex items-center gap-2 rounded-lg border px-3 py-2 text-sm " +
-        (right ? "border-ink bg-ink text-paper" : "border-line bg-paper")
+        (right ? "border-(--color-right) bg-right-soft text-ink" : "border-line bg-paper")
       }
     >
-      <span className={"w-4 shrink-0 text-xs " + (right ? "text-paper" : "text-muted")}>{letter}</span>
-      <span>{text}</span>
+      <span className="numeric w-4 shrink-0 text-xs text-muted">{letter}</span>
+      <span className="flex-1">{text}</span>
+      {right && (
+        <span className="font-semibold text-(--color-right)" aria-hidden="true">
+          ✓
+        </span>
+      )}
     </div>
   );
 }
@@ -84,15 +89,13 @@ export function BlockExample({ id }: { id: StepId }) {
             : "Chaque ligne ajoute un point. La case vide, c'est trois points."
         }
       >
-        <div className="grid max-w-[220px] grid-cols-3 gap-2">
+        <div className="grid w-fit grid-cols-3 gap-2">
           {row.map((cell, i) => (
-            <FigureTile key={i} marks={cell} missing={cell === null} />
+            <FigureTile key={i} marks={cell} />
           ))}
         </div>
         <div className="mt-3 flex items-center gap-3">
-          <div className="w-16">
-            <FigureTile marks={dots(3)} />
-          </div>
+          <FigureTile marks={dots(3)} />
           <p className="text-sm font-medium">{en ? "This one." : "Celle-ci."}</p>
         </div>
       </Card>
@@ -114,7 +117,7 @@ export function BlockExample({ id }: { id: StepId }) {
             : "Il tourne d'un quart de tour : pointe en haut, à droite, en bas, puis à gauche."
         }
       >
-        <div className="grid grid-cols-4 gap-2">
+        <div className="flex flex-wrap gap-2">
           {frames.map((frame, i) => (
             <FigureTile key={i} marks={frame} />
           ))}
@@ -203,7 +206,7 @@ export function BlockExample({ id }: { id: StepId }) {
         ))}
       </div>
       <div className="mt-3 flex items-center gap-3">
-        <div className="grid h-16 w-16 place-items-center rounded-xl border border-copper bg-paper">
+        <div className="grid h-16 w-16 place-items-center rounded-xl border border-ink/30 border-dashed bg-paper">
           <SymbolMark id={1} />
         </div>
         <p className="text-sm font-medium">{en ? "Type 2" : "Tape 2"}</p>
@@ -215,7 +218,7 @@ export function BlockExample({ id }: { id: StepId }) {
 function ScanRow({ ids, target, label }: { ids: number[]; target: number; label: string }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg border border-copper bg-paper">
+      <div className="grid h-12 w-12 shrink-0 place-items-center rounded-lg border border-ink/30 border-dashed bg-paper">
         <SymbolMark id={target} className="h-7 w-7" />
       </div>
       <div className="grid flex-1 grid-cols-5 gap-1 rounded-lg border border-line bg-paper p-1">

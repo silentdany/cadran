@@ -74,10 +74,11 @@ export function ChoiceRun({
   if (!item) return null;
 
   return (
-    <Shell kicker={kicker} title={`${title} · ${index + 1}/${deck.length}`} progress={progress} onPause={onPause}>
-      <p className="text-sm text-muted">{lead}</p>
-      <h2 className="mt-4 font-display text-3xl leading-tight text-ink">{item.prompt}</h2>
-      <p className="mt-3 text-xs text-muted">{t.keyPick}</p>
+    <Shell kicker={kicker} title={title}
+      counter={`${index + 1} / ${deck.length}`} progress={progress} onPause={onPause}>
+      <p className="text-muted">{lead}</p>
+      <h2 className="mt-5 font-display text-[32px] leading-tight text-ink">{item.prompt}</h2>
+      <p className="mt-2 text-sm text-muted">{t.keyPick}</p>
       <div className="mt-6 flex flex-col gap-2">
         {item.options.map((option, i) => (
           <ChoiceButton key={option} index={i} onPick={() => pick(i)}>

@@ -1,4 +1,5 @@
-export type Tone = "ink" | "copper" | "moss";
+/** Figure tints: ink, needle and blue stay distinct for red-green colour blindness. */
+export type Tone = "ink" | "needle" | "blue";
 export type Kind =
   | "circle"
   | "square"
@@ -63,7 +64,7 @@ export function barWithDots(rot: number, n: number): Mark[] {
   const xs = n === 1 ? [50] : n === 2 ? [38, 62] : [26, 50, 74];
   return [
     { kind: "bar", tone: "ink", cx: 50, cy: 40, s: 46, rot },
-    ...xs.map((cx) => ({ kind: "dot" as const, tone: "copper" as const, cx, cy: 76, s: 10 })),
+    ...xs.map((cx) => ({ kind: "dot" as const, tone: "needle" as const, cx, cy: 76, s: 12 })),
   ];
 }
 
@@ -303,11 +304,11 @@ export type MatrixItem = {
 };
 
 const circle = center("circle", "ink", 34);
-const square = center("square", "copper", 32);
+const square = center("square", "needle", 32);
 const triangle = center("triangle", "ink", 36);
-const diamond = center("diamond", "copper", 34);
+const diamond = center("diamond", "needle", 34);
 const ring = center("ring", "ink", 34);
-const plus = center("plus", "copper", 32);
+const plus = center("plus", "needle", 32);
 
 function shaped(kind: Kind, tone: Tone): Mark[] {
   return [center(kind, tone, 34)];
@@ -348,20 +349,20 @@ export const MATRICES: MatrixItem[] = [
     points: 2,
     cells: [
       shaped("circle", "ink"),
-      shaped("circle", "copper"),
-      shaped("circle", "moss"),
+      shaped("circle", "needle"),
+      shaped("circle", "blue"),
       shaped("square", "ink"),
-      shaped("square", "copper"),
-      shaped("square", "moss"),
+      shaped("square", "needle"),
+      shaped("square", "blue"),
       shaped("triangle", "ink"),
-      shaped("triangle", "copper"),
+      shaped("triangle", "needle"),
       null,
     ],
     options: [
       shaped("triangle", "ink"),
-      shaped("square", "moss"),
-      shaped("triangle", "moss"),
-      shaped("circle", "moss"),
+      shaped("square", "blue"),
+      shaped("triangle", "blue"),
+      shaped("circle", "blue"),
     ],
     answer: 2,
   },
@@ -411,18 +412,18 @@ export const MATRICES: MatrixItem[] = [
       shaped("circle", "ink"),
       shaped("square", "ink"),
       shaped("triangle", "ink"),
-      shaped("square", "copper"),
-      shaped("triangle", "copper"),
-      shaped("circle", "copper"),
-      shaped("triangle", "moss"),
-      shaped("circle", "moss"),
+      shaped("square", "needle"),
+      shaped("triangle", "needle"),
+      shaped("circle", "needle"),
+      shaped("triangle", "blue"),
+      shaped("circle", "blue"),
       null,
     ],
     options: [
       shaped("square", "ink"),
-      shaped("circle", "moss"),
-      shaped("triangle", "moss"),
-      shaped("square", "moss"),
+      shaped("circle", "blue"),
+      shaped("triangle", "blue"),
+      shaped("square", "blue"),
     ],
     answer: 3,
   },
@@ -477,11 +478,13 @@ export const SUITES: SuiteItem[] = [
       [center("bar", "ink", 46, 90)],
       [center("bar", "ink", 46, 135)],
     ],
+    // A bar looks the same after a half turn, so the answer (180°) is drawn at 0°
+    // and no other option may be horizontal.
     options: [
       [center("bar", "ink", 46, 90)],
-      [center("bar", "ink", 46, 180)],
-      [center("bar", "ink", 46, 135)],
       [center("bar", "ink", 46, 0)],
+      [center("bar", "ink", 46, 135)],
+      [center("bar", "ink", 46, 45)],
     ],
     answer: 1,
   },
@@ -505,17 +508,18 @@ export const SUITES: SuiteItem[] = [
   {
     id: "q4",
     points: 2,
+    // Steps of 10 units: smaller steps cannot be told apart at 72 px.
     frames: [
-      [center("square", "ink", 18)],
-      [center("square", "ink", 26)],
+      [center("square", "ink", 14)],
+      [center("square", "ink", 24)],
       [center("square", "ink", 34)],
-      [center("square", "ink", 42)],
+      [center("square", "ink", 44)],
     ],
     options: [
-      [center("square", "ink", 42)],
+      [center("square", "ink", 44)],
       [center("square", "ink", 34)],
-      [center("circle", "ink", 50)],
-      [center("square", "ink", 50)],
+      [center("circle", "ink", 54)],
+      [center("square", "ink", 54)],
     ],
     answer: 3,
   },
@@ -524,14 +528,14 @@ export const SUITES: SuiteItem[] = [
     points: 2,
     frames: [
       [center("circle", "ink", 32)],
-      [center("circle", "copper", 32)],
-      [center("circle", "moss", 32)],
+      [center("circle", "needle", 32)],
+      [center("circle", "blue", 32)],
       [center("circle", "ink", 32)],
     ],
     options: [
-      [center("circle", "moss", 32)],
-      [center("square", "copper", 30)],
-      [center("circle", "copper", 32)],
+      [center("circle", "blue", 32)],
+      [center("square", "needle", 30)],
+      [center("circle", "needle", 32)],
       [center("circle", "ink", 32)],
     ],
     answer: 2,
@@ -542,37 +546,37 @@ export const SUITES: SuiteItem[] = [
     frames: [
       [
         { kind: "triangle", tone: "ink", cx: 40, cy: 46, s: 32, rot: 0 },
-        { kind: "dot", tone: "copper", cx: 22, cy: 78, s: 12 },
+        { kind: "dot", tone: "needle", cx: 22, cy: 78, s: 12 },
       ],
       [
         { kind: "triangle", tone: "ink", cx: 40, cy: 46, s: 32, rot: 90 },
-        { kind: "dot", tone: "copper", cx: 38, cy: 78, s: 12 },
+        { kind: "dot", tone: "needle", cx: 38, cy: 78, s: 12 },
       ],
       [
         { kind: "triangle", tone: "ink", cx: 40, cy: 46, s: 32, rot: 180 },
-        { kind: "dot", tone: "copper", cx: 54, cy: 78, s: 12 },
+        { kind: "dot", tone: "needle", cx: 54, cy: 78, s: 12 },
       ],
       [
         { kind: "triangle", tone: "ink", cx: 40, cy: 46, s: 32, rot: 270 },
-        { kind: "dot", tone: "copper", cx: 70, cy: 78, s: 12 },
+        { kind: "dot", tone: "needle", cx: 70, cy: 78, s: 12 },
       ],
     ],
     options: [
       [
         { kind: "triangle", tone: "ink", cx: 40, cy: 46, s: 32, rot: 270 },
-        { kind: "dot", tone: "copper", cx: 86, cy: 78, s: 12 },
+        { kind: "dot", tone: "needle", cx: 86, cy: 78, s: 12 },
       ],
       [
         { kind: "triangle", tone: "ink", cx: 40, cy: 46, s: 32, rot: 0 },
-        { kind: "dot", tone: "copper", cx: 70, cy: 78, s: 12 },
+        { kind: "dot", tone: "needle", cx: 70, cy: 78, s: 12 },
       ],
       [
         { kind: "triangle", tone: "ink", cx: 40, cy: 46, s: 32, rot: 0 },
-        { kind: "dot", tone: "copper", cx: 86, cy: 78, s: 12 },
+        { kind: "dot", tone: "needle", cx: 86, cy: 78, s: 12 },
       ],
       [
         { kind: "triangle", tone: "ink", cx: 40, cy: 46, s: 32, rot: 90 },
-        { kind: "dot", tone: "copper", cx: 86, cy: 78, s: 12 },
+        { kind: "dot", tone: "needle", cx: 86, cy: 78, s: 12 },
       ],
     ],
     answer: 2,

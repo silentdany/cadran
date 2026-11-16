@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { copy, type Copy, type Locale } from "@/lib/battery/copy";
-
-const KEY = "cadran-locale";
+import seo from "@/lib/seo.json";
 
 const LocaleContext = createContext<{
   locale: Locale;
@@ -13,24 +12,36 @@ const LocaleContext = createContext<{
   t: copy.fr,
 });
 
-export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("fr");
-
-  useEffect(() => {
-    const saved = window.localStorage.getItem(KEY);
-    if (saved === "en" || saved === "fr") setLocaleState(saved);
-  }, []);
+/**
+ * The route picks the starting locale ("/" is French, "/en" is English).
+ * Switching language mid-session keeps the session on screen: we swap the
+ * copy in place and only rewrite the URL, lang and title, without a router
+ * navigation that would remount the app.
+ */
+export function LocaleProvider({
+  locale: initial,
+  children,
+}: {
+  locale: Locale;
+  children: ReactNode;
+}) {
+  const [locale, setLocaleState] = useState<Locale>(initial);
 
   useEffect(() => {
     document.documentElement.lang = locale;
+    document.title = seo[locale].title;
   }, [locale]);
 
   function setLocale(next: Locale) {
     setLocaleState(next);
-    window.localStorage.setItem(KEY, next);
+    window.history.replaceState(window.history.state, "", seo[next].path);
   }
 
-  return <LocaleContext.Provider value={{ locale, setLocale, t: copy[locale] }}>{children}</LocaleContext.Provider>;
+  return (
+    <LocaleContext.Provider value={{ locale, setLocale, t: copy[locale] }}>
+      {children}
+    </LocaleContext.Provider>
+  );
 }
 
 export function useLocale() {
@@ -40,17 +51,31 @@ export function useLocale() {
 export function LangSwitch() {
   const { locale, setLocale } = useLocale();
   return (
-    <div className="inline-flex shrink-0 rounded-full border border-line bg-sheet p-0.5 text-xs font-medium" role="group" aria-label={locale === "fr" ? "Langue" : "Language"}>
-      {(["fr", "en"] as const).map((code) => (
-        <button
-          key={code}
-          type="button"
-          onClick={() => setLocale(code)}
-          aria-pressed={locale === code}
-          className={"rounded-full px-2.5 py-1 uppercase " + (locale === code ? "bg-ink text-paper" : "text-muted")}
-        >
-          {code}
-        </button>
+    <div
+      className="flex items-center gap-2 text-sm"
+      role="group"
+      aria-label={locale === "fr" ? "Langue" : "Language"}
+    >
+      {(["fr", "en"] as const).map((code, i) => (
+        <span key={code} className="flex items-center gap-2">
+          {i > 0 && (
+            <span className="text-line" aria-hidden="true">
+              ·
+            </span>
+          )}
+          <button
+            type="button"
+            lang={code}
+            onClick={() => setLocale(code)}
+            aria-pressed={locale === code}
+            className={
+              "uppercase " +
+              (locale === code ? "font-semibold text-ink" : "text-muted hover:text-ink")
+            }
+          >
+            {code}
+          </button>
+        </span>
       ))}
     </div>
   );

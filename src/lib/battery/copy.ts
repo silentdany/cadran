@@ -114,9 +114,14 @@ export const copy = {
       { name: "Rythme", text: "Vitesse et précision" },
     ],
     homeKicker: "Séance cognitive",
-    tagline: (n: number) => `Quatre axes, environ ${n} minutes. Une photo de comment tu raisonnes aujourd'hui — pas un diagnostic.`,
+    // `accent` is set in Instrument Serif italic: one accent word per screen at most.
+    tagline: (n: number) => ({
+      before: `Quatre axes, environ ${n} minutes. Une photo de comment tu raisonnes `,
+      accent: "aujourd'hui",
+      after: " — pas un diagnostic.",
+    }),
     disclaimer:
-      "Même logique qu'un bilan en quatre axes, items originaux. Ce n'est pas le WAIS-IV et les scores ne sont pas étalonnés. Pour un vrai bilan, un psychologue.",
+      "Même logique qu'un bilan en quatre axes, items originaux. Une estimation maison, pas un bilan clinique : les scores ne sont pas étalonnés. Pour un vrai bilan, un psychologue.",
     totalNote: (n: number) => `Total ${n} min. Tu peux t'arrêter entre les blocs, la séance reste sur cet appareil.`,
     minutes: "min",
     resume: (title: string, left: number) => `Reprendre · ${title} · ${left} min`,
@@ -133,7 +138,6 @@ export const copy = {
     confirm: "Valider",
     whichFigure: "Quelle figure complète ?",
     calcLead: "De tête. Juste d'abord, rapide ensuite.",
-    calcTitle: (i: number, n: number) => `Calcul · ${i}/${n}`,
     present: "Présent",
     absent: "Absent",
     scanTitle: "Présent ou absent",
@@ -194,9 +198,13 @@ export const copy = {
       { name: "Pace", text: "Speed and accuracy" },
     ],
     homeKicker: "Cognitive session",
-    tagline: (n: number) => `Four axes, about ${n} minutes. A snapshot of how you reason today — not a diagnosis.`,
+    tagline: (n: number) => ({
+      before: `Four axes, about ${n} minutes. A snapshot of how you reason `,
+      accent: "today",
+      after: " — not a diagnosis.",
+    }),
     disclaimer:
-      "Same four-axis logic, original items. This is not the WAIS-IV and the scores are not normed. For a real assessment, see a psychologist.",
+      "Same four-axis logic, original items. A homemade estimate, not a clinical assessment: the scores are not normed. For a real assessment, see a psychologist.",
     totalNote: (n: number) => `Total ${n} min. You can stop between blocks. The session stays on this device.`,
     minutes: "min",
     resume: (title: string, left: number) => `Resume · ${title} · ${left} min`,
@@ -213,7 +221,6 @@ export const copy = {
     confirm: "OK",
     whichFigure: "Which figure completes it?",
     calcLead: "In your head. Accuracy first, then speed.",
-    calcTitle: (i: number, n: number) => `Arithmetic · ${i}/${n}`,
     present: "Present",
     absent: "Absent",
     scanTitle: "Present or absent",

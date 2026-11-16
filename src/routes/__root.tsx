@@ -1,42 +1,40 @@
-import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
-import { AuthProvider } from "@/lib/auth/provider";
-import { PreviewHostBridge } from "@/components/preview-host-bridge";
+import {
+  createRootRoute,
+  HeadContent,
+  Outlet,
+  Scripts,
+  useRouterState,
+} from "@tanstack/react-router";
+import { localeFromPath } from "@/lib/seo";
 import appCss from "../styles.css?url";
-
-const APP_NAME = "Cadran";
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: APP_NAME },
-      { name: "theme-color", content: "#f4efe6" },
-      {
-        name: "description",
-        content:
-          "Séance cognitive en quatre axes : langage, formes, mémoire, rythme. Estimation maison, pas un bilan clinique.",
-      },
+      { name: "theme-color", content: "#f4f2ec" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "stylesheet", href: appCss },
-      { rel: "manifest", href: "/__grok/manifest.webmanifest" },
-      { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
     ],
   }),
-  component: () => (
-    <html lang="fr" suppressHydrationWarning>
+  component: RootDocument,
+});
+
+function RootDocument() {
+  // The page language follows the route: "/" is French, "/en" is English.
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  return (
+    <html lang={localeFromPath(pathname)}>
       <head>
         <HeadContent />
       </head>
       <body>
-        <PreviewHostBridge />
-        <AuthProvider>
-          <Outlet />
-        </AuthProvider>
+        <Outlet />
         <Scripts />
       </body>
     </html>
-  ),
-});
+  );
+}
