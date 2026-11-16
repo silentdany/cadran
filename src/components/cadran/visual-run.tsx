@@ -88,8 +88,9 @@ export function VisualRun({
   if (!item) return null;
 
   return (
-    <Shell kicker={kicker} title={`${title} · ${index + 1}/${deck.length}`} progress={progress} onPause={onPause}>
-      <p className="text-sm text-muted">{lead}</p>
+    <Shell kicker={kicker} title={title}
+      counter={`${index + 1} / ${deck.length}`} progress={progress} onPause={onPause}>
+      <p className="text-muted">{lead}</p>
       {/* Series, matrix cells and options share FigureTile, so they always render at the same px size. */}
       {mode === "matrix" && item.cells && (
         <div className="mt-6 grid w-fit grid-cols-3 gap-3">

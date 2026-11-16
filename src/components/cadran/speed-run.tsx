@@ -102,7 +102,7 @@ export function SpeedRun({
 
   if (!armed) {
     return (
-      <Shell kicker={kicker} title={title} progress={progress} onPause={onPause}>
+      <Shell kicker={kicker} title={title} progress={progress} onPause={onPause} needle="action">
         <h2 className="font-display text-3xl leading-tight">{mode === "scan" ? t.scanTitle : t.codeTitle}</h2>
         <p className="mt-3 text-muted">{mode === "scan" ? t.scanLead : t.codeLead}</p>
         {mode === "code" && (
@@ -110,7 +110,7 @@ export function SpeedRun({
             {codeKey.map((id, n) => (
               <div key={id} className="grid place-items-center rounded-xl border border-line bg-sheet py-2">
                 <SymbolMark id={id} className="h-8 w-8" />
-                <span className="mt-1 text-sm font-medium">{n + 1}</span>
+                <span className="numeric mt-1 text-sm">{n + 1}</span>
               </div>
             ))}
           </div>
@@ -126,7 +126,8 @@ export function SpeedRun({
   const live = scan[cursor % scan.length];
 
   return (
-    <Shell kicker={kicker} title={`${title} · ${left}s`} progress={progress} onPause={onPause}>
+    <Shell kicker={kicker} title={title}
+      counter={`${left} s`} progress={progress} onPause={onPause}>
       <p className="text-sm text-muted">{t.tally(hits.current, misses.current)}</p>
       {mode === "scan" && live && (
         <>
@@ -144,13 +145,13 @@ export function SpeedRun({
           </div>
           <p className="mt-4 text-xs text-muted">{t.keyScan}</p>
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <button type="button" className="min-h-14 rounded-xl bg-ink text-paper" onClick={() => answer(live.present)}>
+            <button type="button" className="min-h-14 rounded-[10px] bg-ink font-semibold text-white" onClick={() => answer(live.present)}>
               {t.present}
-              <span className="ml-2 text-xs opacity-70">←</span>
+              <span className="ml-2 text-xs text-white/70">←</span>
             </button>
             <button
               type="button"
-              className="min-h-14 rounded-xl border border-line bg-sheet"
+              className="min-h-14 rounded-[10px] border border-ink/20 bg-sheet hover:border-ink/40"
               onClick={() => answer(!live.present)}
             >
               {t.absent}
@@ -165,7 +166,7 @@ export function SpeedRun({
             {codeKey.map((id, n) => (
               <div key={id} className="grid place-items-center">
                 <SymbolMark id={id} className="h-6 w-6" />
-                <span className="text-xs text-muted">{n + 1}</span>
+                <span className="numeric text-xs text-muted">{n + 1}</span>
               </div>
             ))}
           </div>
@@ -178,7 +179,7 @@ export function SpeedRun({
               <button
                 key={n}
                 type="button"
-                className="min-h-12 rounded-xl border border-line bg-sheet text-lg font-medium"
+                className="numeric min-h-12 rounded-[10px] border border-line bg-sheet text-lg hover:border-ink/40"
                 onClick={() => answer(n === symbol)}
               >
                 {n + 1}

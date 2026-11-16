@@ -60,11 +60,12 @@ export function CalcRun({
   if (!item) return null;
 
   return (
-    <Shell kicker={kicker} title={t.calcTitle(index + 1, CALCULS.length)} progress={progress} onPause={onPause}>
-      <p className="text-sm text-muted">{t.calcLead}</p>
-      <h2 className="mt-6 font-display text-5xl tabular-nums">{item.text}</h2>
-      <p className="mt-4 min-h-10 font-display text-3xl tabular-nums">{typed || "—"}</p>
-      <p className="mt-2 text-xs text-muted">{t.keyDigits}</p>
+    <Shell kicker={kicker} title={t.steps.calc.title}
+      counter={`${index + 1} / ${CALCULS.length}`} progress={progress} onPause={onPause}>
+      <p className="text-muted">{t.calcLead}</p>
+      <h2 className="numeric mt-6 text-5xl">{item.text}</h2>
+      <p className="numeric mt-4 min-h-10 text-3xl">{typed || "—"}</p>
+      <p className="mt-2 text-sm text-muted">{t.keyDigits}</p>
       <div className="mt-auto pt-6">
         <Keypad
           onDigit={(d) => setTyped((v) => (v + d).slice(0, 6))}

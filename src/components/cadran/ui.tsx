@@ -1,39 +1,75 @@
 import type { ReactNode } from "react";
 import { LangSwitch, useLocale } from "@/components/cadran/locale";
 
+/** Number of blocks in a session: one tick per block on the progress line. */
+const BLOCKS = 8;
+
+/**
+ * Frame for every in-session screen: a 2 px progress line with one tick per
+ * block, a mono counter on the right, then the step label, Pause and title.
+ *
+ * The needle colour may appear once per screen. It goes to the progress line
+ * by default; screens that show a PrimaryButton pass `needle="action"` so the
+ * line turns ink and the button keeps the needle.
+ */
 export function Shell({
   kicker,
   title,
+  counter,
   progress,
   onPause,
+  needle = "progress",
   children,
 }: {
   kicker: string;
   title: string;
+  counter?: string;
   progress: number;
   onPause?: () => void;
+  needle?: "progress" | "action";
   children: ReactNode;
 }) {
+  const done = Math.max(0, Math.min(100, progress));
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-xl flex-col px-5 pb-10 pt-5">
-      <header className="sticky top-0 z-10 -mx-5 bg-paper/95 px-5 pb-3 pt-2 backdrop-blur">
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <p className="label truncate">{kicker}</p>
-          <div className="flex shrink-0 items-center gap-3">
-            <LangSwitch />
-            {onPause && (
-              <button type="button" onClick={onPause} className="text-xs text-muted">
-                <PauseLabel />
-              </button>
-            )}
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-10 bg-paper px-5 pt-4 sm:px-8 sm:pt-5">
+        <div className="flex items-center gap-4">
+          <div
+            className="relative h-3 flex-1"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(done)}
+          >
+            <div className="absolute inset-x-0 top-[5px] h-0.5 bg-line" />
+            <div
+              className={
+                "absolute left-0 top-[5px] h-0.5 transition-[width] duration-150 " +
+                (needle === "progress" ? "bg-needle" : "bg-ink")
+              }
+              style={{ width: `${done}%` }}
+            />
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-between" aria-hidden="true">
+              {Array.from({ length: BLOCKS + 1 }, (_, i) => (
+                <span key={i} className="block h-2 w-px bg-line" />
+              ))}
+            </div>
           </div>
-        </div>
-        <p className="mb-2 text-xs text-muted">{title}</p>
-        <div className="h-1 overflow-hidden rounded-full bg-line">
-          <div className="h-full rounded-full bg-needle transition-all" style={{ width: `${progress}%` }} />
+          {counter && <p className="numeric shrink-0 text-base leading-none text-ink">{counter}</p>}
         </div>
       </header>
-      <div className="flex flex-1 flex-col pt-6">{children}</div>
+      <main className="mx-auto flex w-full max-w-[560px] flex-1 flex-col px-5 pb-10 sm:px-0">
+        <div className="mt-5 flex items-center justify-between gap-3">
+          <p className="label truncate">{kicker}</p>
+          {onPause && (
+            <button type="button" onClick={onPause} className="shrink-0 text-sm text-muted hover:text-ink">
+              <PauseLabel />
+            </button>
+          )}
+        </div>
+        <h1 className="mt-3 font-display text-[40px] leading-none tracking-[-0.01em] text-ink">{title}</h1>
+        <div className="flex flex-1 flex-col pt-4">{children}</div>
+      </main>
     </div>
   );
 }
@@ -51,7 +87,7 @@ export function PrimaryButton({
     <button
       type={type}
       onClick={onClick}
-      className="min-h-12 w-full rounded-xl bg-ink px-5 text-base font-medium text-paper transition hover:opacity-90"
+      className="h-[52px] w-full rounded-[26px] bg-needle px-5 text-base font-semibold text-white transition-colors duration-150 hover:bg-needle-press active:bg-needle-press"
     >
       {children}
     </button>
@@ -63,7 +99,7 @@ export function GhostButton({ children, onClick }: { children: ReactNode; onClic
     <button
       type="button"
       onClick={onClick}
-      className="min-h-12 w-full rounded-xl border border-line bg-sheet px-5 text-base font-medium text-ink"
+      className="h-[52px] w-full rounded-[26px] border border-ink/20 bg-sheet px-5 text-base font-medium text-ink transition-colors duration-150 hover:border-ink/40"
     >
       {children}
     </button>
@@ -93,11 +129,11 @@ export function ChoiceButton({
       type="button"
       onClick={onPick}
       className={
-        "flex min-h-14 w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-base transition " +
-        (selected ? "border-ink bg-ink text-paper" : "border-line bg-sheet text-ink hover:border-ink")
+        "flex min-h-14 w-full items-center gap-3 rounded-[10px] border px-4 py-3 text-left text-base transition-colors duration-150 " +
+        (selected ? "border-ink bg-needle-soft text-ink ring-1 ring-ink" : "border-line bg-sheet text-ink hover:border-ink/40")
       }
     >
-      <span className={"w-5 shrink-0 text-sm font-medium " + (selected ? "text-paper" : "text-muted")}>
+      <span className="numeric w-5 shrink-0 text-xs text-muted">
         {LETTERS[index] ?? index + 1}
       </span>
       <span className="flex-1">{children}</span>
@@ -130,8 +166,8 @@ export function Keypad({
             else onDigit(k);
           }}
           className={
-            "min-h-12 rounded-xl border text-lg font-medium " +
-            (k === "OK" ? "border-ink bg-ink text-paper" : "border-line bg-sheet text-ink") +
+            "min-h-12 rounded-[10px] border text-lg " +
+            (k === "OK" ? "border-ink bg-ink font-semibold text-white" : "numeric border-line bg-sheet text-ink hover:border-ink/40") +
             (!withZero && k === "OK" ? " col-span-2" : "")
           }
         >
