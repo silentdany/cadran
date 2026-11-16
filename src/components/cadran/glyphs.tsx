@@ -6,9 +6,32 @@ const FILL: Record<Mark["tone"], string> = {
   moss: "var(--color-moss)",
 };
 
-export function CellSvg({ marks, className = "" }: { marks: Mark[]; className?: string }) {
+/** Every figure is drawn in this one coordinate space, series and options alike. */
+export const VIEWBOX = "0 0 100 100";
+
+/**
+ * Tile size in px: 72 on phones, 88 from the `sm` breakpoint (640 px).
+ * Series cells, matrix cells and answer options all use this same class,
+ * so a 30-unit shape is exactly as big everywhere. Never scale to content.
+ */
+export const TILE_SIZE_CLASS = "size-[72px] sm:size-[88px]";
+
+/** Four short ticks at the middle of each edge: a fixed scale reference. */
+function Graduations() {
   return (
-    <svg viewBox="0 0 100 100" className={className} aria-hidden="true">
+    <g fill="none" stroke="var(--color-line)" strokeWidth={2} data-graduations="">
+      <path d="M50 0v6" />
+      <path d="M50 94v6" />
+      <path d="M0 50h6" />
+      <path d="M94 50h6" />
+    </g>
+  );
+}
+
+export function CellSvg({ marks }: { marks: Mark[] }) {
+  return (
+    <svg viewBox={VIEWBOX} className="block size-full" aria-hidden="true">
+      <Graduations />
       {marks.map((m, i) => (
         <Shape key={i} m={m} />
       ))}
@@ -30,7 +53,7 @@ function Shape({ m }: { m: Mark }) {
           r={m.s / 2}
           fill="none"
           stroke={fill}
-          strokeWidth={4}
+          strokeWidth={5}
           transform={rot}
         />
       );
@@ -41,7 +64,6 @@ function Shape({ m }: { m: Mark }) {
           y={m.cy - m.s / 2}
           width={m.s}
           height={m.s}
-          rx={2}
           fill={fill}
           transform={rot}
         />
@@ -80,27 +102,23 @@ function Shape({ m }: { m: Mark }) {
   }
 }
 
-export function FigureTile({
-  marks,
-  missing = false,
-  label,
-}: {
-  marks: Mark[] | null;
-  missing?: boolean;
-  label?: string;
-}) {
+export function FigureTile({ marks }: { marks: Mark[] | null }) {
+  if (!marks) {
+    return (
+      <div
+        data-tile=""
+        className={`${TILE_SIZE_CLASS} grid shrink-0 place-items-center rounded-[10px] border border-dashed border-ink/30 bg-paper`}
+      >
+        <span className="font-display text-[32px] leading-none text-muted">?</span>
+      </div>
+    );
+  }
   return (
     <div
-      className={
-        "grid aspect-square place-items-center rounded-xl border bg-sheet " +
-        (missing ? "border-dashed border-copper" : "border-line")
-      }
+      data-tile=""
+      className={`${TILE_SIZE_CLASS} shrink-0 overflow-hidden rounded-[10px] border border-line bg-sheet`}
     >
-      {marks ? (
-        <CellSvg marks={marks} className="h-[78%] w-[78%]" />
-      ) : (
-        <span className="font-display text-2xl text-copper">{label ?? "?"}</span>
-      )}
+      <CellSvg marks={marks} />
     </div>
   );
 }

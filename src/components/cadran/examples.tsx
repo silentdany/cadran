@@ -84,15 +84,13 @@ export function BlockExample({ id }: { id: StepId }) {
             : "Chaque ligne ajoute un point. La case vide, c'est trois points."
         }
       >
-        <div className="grid max-w-[220px] grid-cols-3 gap-2">
+        <div className="grid w-fit grid-cols-3 gap-2">
           {row.map((cell, i) => (
-            <FigureTile key={i} marks={cell} missing={cell === null} />
+            <FigureTile key={i} marks={cell} />
           ))}
         </div>
         <div className="mt-3 flex items-center gap-3">
-          <div className="w-16">
-            <FigureTile marks={dots(3)} />
-          </div>
+          <FigureTile marks={dots(3)} />
           <p className="text-sm font-medium">{en ? "This one." : "Celle-ci."}</p>
         </div>
       </Card>
@@ -114,7 +112,7 @@ export function BlockExample({ id }: { id: StepId }) {
             : "Il tourne d'un quart de tour : pointe en haut, à droite, en bas, puis à gauche."
         }
       >
-        <div className="grid grid-cols-4 gap-2">
+        <div className="flex flex-wrap gap-2">
           {frames.map((frame, i) => (
             <FigureTile key={i} marks={frame} />
           ))}
