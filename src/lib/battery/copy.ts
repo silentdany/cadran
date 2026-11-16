@@ -118,7 +118,7 @@ export const copy = {
     tagline: (n: number) => ({
       before: `Quatre axes, environ ${n} minutes. Une photo de comment tu raisonnes `,
       accent: "aujourd'hui",
-      after: " — pas un diagnostic.",
+      after: ", pas un diagnostic.",
     }),
     disclaimer:
       "Même logique qu'un bilan en quatre axes, items originaux. Une estimation maison, pas un bilan clinique : les scores ne sont pas étalonnés. Pour un vrai bilan, un psychologue.",
@@ -171,7 +171,7 @@ export const copy = {
     codeDetail: "Code (net)",
     points: "pts",
     footnote:
-      "100 est le milieu de cette échelle, 15 points un écart-type — la même présentation qu'un QI, sans les normes. Langage et formes sont fixes : les refaire de près gonfle le score. Mémoire et rythme changent à chaque séance.",
+      "100 est le milieu de cette échelle, 15 points un écart-type : la même présentation qu'un QI, sans les normes. Langage et formes sont fixes : les refaire de près gonfle le score. Mémoire et rythme changent à chaque séance.",
     again: "Refaire une séance",
     back: "Retour",
     session: "séance",
@@ -201,7 +201,7 @@ export const copy = {
     tagline: (n: number) => ({
       before: `Four axes, about ${n} minutes. A snapshot of how you reason `,
       accent: "today",
-      after: " — not a diagnosis.",
+      after: ", not a diagnosis.",
     }),
     disclaimer:
       "Same four-axis logic, original items. A homemade estimate, not a clinical assessment: the scores are not normed. For a real assessment, see a psychologist.",
@@ -253,7 +253,7 @@ export const copy = {
     codeDetail: "Coding (net)",
     points: "pts",
     footnote:
-      "100 is the middle of this scale, 15 points is one standard deviation — the same presentation as an IQ score, without the norms. Language and shapes are fixed: repeating them closely inflates the score. Memory and pace change each session.",
+      "100 is the middle of this scale, 15 points is one standard deviation: the same presentation as an IQ score, without the norms. Language and shapes are fixed: repeating them closely inflates the score. Memory and pace change each session.",
     again: "Take it again",
     back: "Back",
     session: "session",

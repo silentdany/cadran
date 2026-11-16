@@ -186,7 +186,7 @@ export function SpanRun({
   return (
     <Shell kicker={kicker} title={phase.dir === "fwd" ? t.forward : t.reverse} progress={progress} onPause={onPause}>
       <p className="text-sm text-muted">{phase.dir === "fwd" ? t.typeForward : t.typeBack}</p>
-      <p className="numeric mt-6 min-h-14 text-4xl tracking-widest">{shown || "—"}</p>
+      <p className="numeric mt-6 min-h-14 text-4xl tracking-widest">{shown}</p>
       <p className="mt-2 text-sm text-muted">{t.keyDigits}</p>
       <div className="mt-auto pt-6">
         <Keypad
