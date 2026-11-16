@@ -64,7 +64,7 @@ export function CalcRun({
       counter={`${index + 1} / ${CALCULS.length}`} progress={progress} onPause={onPause}>
       <p className="text-muted">{t.calcLead}</p>
       <h2 className="numeric mt-6 text-5xl">{item.text}</h2>
-      <p className="numeric mt-4 min-h-10 text-3xl">{typed || "—"}</p>
+      <p className="numeric mt-4 min-h-10 text-3xl">{typed}</p>
       <p className="mt-2 text-sm text-muted">{t.keyDigits}</p>
       <div className="mt-auto pt-6">
         <Keypad

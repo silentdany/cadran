@@ -1,191 +1,59 @@
-#!/usr/bin/env node
-/**
- * Renders the share images public/og-fr.png and public/og-en.png (1200x630).
- *
- * Layout from the art direction: paper background, "Cadran" in Instrument
- * Serif 128 and a Geist 34 tagline on the left, a flat dial with 60 ticks,
- * the four area labels and one needle on the right, the domain in Geist
- * Mono at the bottom left. No score, no number, no gradient.
- *
- * Satori lays the page out as SVG, resvg turns it into PNG. Both are dev
- * dependencies, so run `npm run og` and commit the PNGs when copy changes.
- */
 import { readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
-import satori from "satori";
-import { Resvg } from "@resvg/resvg-js";
-
-const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const seo = JSON.parse(readFileSync(join(root, "src/lib/seo.json"), "utf8"));
-
-const C = {
-  paper: "#F4F2EC",
-  ink: "#16181D",
-  muted: "#5D626C",
-  line: "#DCD8CF",
-  needle: "#D2451E",
-};
-
-function font(pkg, file) {
-  return readFileSync(join(root, "node_modules/@fontsource", pkg, "files", file));
-}
-
+import { createRequire } from "node:module";
+const require = createRequire("/workspace/cadran/package.json");
+const satori = (await import("/workspace/cadran/node_modules/satori/dist/index.js")).default;
+const { Resvg } = require("@resvg/resvg-js");
+const NM = "/workspace/cadran/node_modules/@fontsource/";
+const C = { paper:"#F4F2EC", sheet:"#FFFFFF", ink:"#16181D", muted:"#5D626C", line:"#DCD8CF", needle:"#D2451E", blue:"#2C5DA8" };
 const fonts = [
-  {
-    name: "Instrument Serif",
-    weight: 400,
-    style: "normal",
-    data: font("instrument-serif", "instrument-serif-latin-400-normal.woff"),
-  },
-  {
-    name: "Geist",
-    weight: 400,
-    style: "normal",
-    data: font("geist-sans", "geist-sans-latin-400-normal.woff"),
-  },
-  {
-    name: "Geist",
-    weight: 600,
-    style: "normal",
-    data: font("geist-sans", "geist-sans-latin-600-normal.woff"),
-  },
-  {
-    name: "Geist Mono",
-    weight: 500,
-    style: "normal",
-    data: font("geist-mono", "geist-mono-latin-500-normal.woff"),
-  },
+  { name:"Instrument Serif", weight:400, style:"normal", data: readFileSync(NM+"instrument-serif/files/instrument-serif-latin-400-normal.woff") },
+  { name:"Geist Mono", weight:500, style:"normal", data: readFileSync(NM+"geist-mono/files/geist-mono-latin-500-normal.woff") },
 ];
-
-// Tiny hyperscript helper so the layout reads like JSX without a build step.
-const h = (type, style, children) => ({ type, props: { style, children } });
-
-/** The dial itself (no text): 380 px circle, 60 ticks, needle, centre dot. */
-function dialSvg() {
-  const size = 500;
-  const c = size / 2;
-  const r = 190;
-  const ticks = Array.from({ length: 60 }, (_, i) => {
-    const a = (i * 6 * Math.PI) / 180;
-    const major = i % 5 === 0;
-    const r1 = r - (major ? 30 : 20);
-    const r2 = r - 10;
-    const p = (rr) => [c + rr * Math.sin(a), c - rr * Math.cos(a)].map((n) => n.toFixed(2));
-    const [x1, y1] = p(r1);
-    const [x2, y2] = p(r2);
-    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
-  }).join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
-  <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${C.ink}" stroke-width="3"/>
-  <g stroke="${C.line}" stroke-width="2">${ticks}</g>
-  <g transform="rotate(60 ${c} ${c})"><polygon points="${c},95 ${c + 3.8},${c} ${c},${c + 22} ${c - 3.8},${c}" fill="${C.needle}"/></g>
-  <circle cx="${c}" cy="${c}" r="7" fill="${C.ink}"/>
-</svg>`;
+// shapes, same geometry as glyphs.tsx
+function shape(m){ const f=C[m.tone], r=`rotate(${m.rot??0} ${m.cx} ${m.cy})`, s=m.s;
+  switch(m.kind){
+    case "circle": return `<circle cx="${m.cx}" cy="${m.cy}" r="${s/2}" fill="${f}"/>`;
+    case "ring": return `<circle cx="${m.cx}" cy="${m.cy}" r="${s/2}" fill="none" stroke="${f}" stroke-width="5"/>`;
+    case "square": return `<rect x="${m.cx-s/2}" y="${m.cy-s/2}" width="${s}" height="${s}" fill="${f}" transform="${r}"/>`;
+    case "diamond": return `<polygon points="${m.cx},${m.cy-s/2} ${m.cx+s/2},${m.cy} ${m.cx},${m.cy+s/2} ${m.cx-s/2},${m.cy}" fill="${f}" transform="${r}"/>`;
+    case "triangle": return `<polygon points="${m.cx},${m.cy-s/2} ${m.cx-s/2},${m.cy+s/2} ${m.cx+s/2},${m.cy+s/2}" fill="${f}" transform="${r}"/>`;
+    case "plus": return `<g transform="${r}" fill="${f}"><rect x="${m.cx-s/2}" y="${m.cy-s/8}" width="${s}" height="${s/4}" rx="1"/><rect x="${m.cx-s/8}" y="${m.cy-s/2}" width="${s/4}" height="${s}" rx="1"/></g>`;
+    case "bar": return `<rect x="${m.cx-s/2}" y="${m.cy-5}" width="${s}" height="10" rx="3" fill="${f}" transform="${r}"/>`;
+    case "dot": return `<circle cx="${m.cx}" cy="${m.cy}" r="${s/2}" fill="${f}"/>`;
+  }}
+const dotsMap={1:[[50,50]],2:[[36,50],[64,50]],3:[[50,32],[34,64],[66,64]],4:[[34,34],[66,34],[34,66],[66,66]]};
+const dots=(n,tone="ink")=>dotsMap[n].map(([cx,cy])=>({kind:"dot",tone,cx,cy,s:14}));
+const c=(kind,tone,s=36,rot=0)=>[{kind,tone,cx:50,cy:50,s,rot}];
+const T = 132, G = 16;
+function tile(marks, ans){
+  const grads=`<g stroke="${C.line}" stroke-width="2"><path d="M50 0v6"/><path d="M50 94v6"/><path d="M0 50h6"/><path d="M94 50h6"/></g>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="${T}" height="${T}">${grads}${marks.map(shape).join("")}</svg>`;
 }
-
-function card(page) {
-  const label = (text, style) =>
-    h(
-      "div",
-      {
-        position: "absolute",
-        display: "flex",
-        justifyContent: "center",
-        width: 160,
-        fontFamily: "Geist",
-        fontWeight: 600,
-        fontSize: 18,
-        letterSpacing: 1.08,
-        color: C.muted,
-        ...style,
-      },
-      text,
-    );
-  const [top, right, bottom, left] = page.ogAxes;
-  const dial = "data:image/svg+xml;base64," + Buffer.from(dialSvg()).toString("base64");
-
-  return h(
-    "div",
-    { width: 1200, height: 630, display: "flex", position: "relative", backgroundColor: C.paper },
-    [
-      // Safe area: 1080x510 centred.
-      h(
-        "div",
-        { position: "absolute", left: 60, top: 60, width: 1080, height: 510, display: "flex" },
-        [
-          h(
-            "div",
-            {
-              position: "absolute",
-              left: 0,
-              top: 0,
-              bottom: 0,
-              width: 520,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            },
-            [
-              h(
-                "div",
-                {
-                  fontFamily: "Instrument Serif",
-                  fontSize: 128,
-                  lineHeight: 0.9,
-                  letterSpacing: -1.28,
-                  color: C.ink,
-                },
-                "Cadran",
-              ),
-              h(
-                "div",
-                {
-                  marginTop: 24,
-                  fontFamily: "Geist",
-                  fontSize: 34,
-                  lineHeight: 1.25,
-                  color: C.muted,
-                },
-                page.ogTagline,
-              ),
-            ],
-          ),
-          h(
-            "div",
-            {
-              position: "absolute",
-              left: 0,
-              bottom: 0,
-              fontFamily: "Geist Mono",
-              fontWeight: 500,
-              fontSize: 22,
-              color: C.muted,
-            },
-            "cadran.accura.dev",
-          ),
-          h(
-            "div",
-            { position: "absolute", right: 20, top: 5, width: 500, height: 500, display: "flex" },
-            [
-              { type: "img", props: { src: dial, width: 500, height: 500 } },
-              label(top, { left: 170, top: 100 }),
-              label(right, { left: 290, top: 239 }),
-              label(bottom, { left: 170, top: 378 }),
-              label(left, { left: 50, top: 239 }),
-            ],
-          ),
-        ],
-      ),
-    ],
-  );
-}
-
-for (const locale of ["fr", "en"]) {
-  const page = seo[locale];
-  const svg = await satori(card(page), { width: 1200, height: 630, fonts });
-  const png = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } }).render().asPng();
-  const out = join(root, "public", `og-${locale}.png`);
-  writeFileSync(out, png);
-  console.log(`${out} ${(png.length / 1024).toFixed(1)} KB`);
-}
+const VARIANT = process.argv[2] ?? "a";
+// 3 rows x 4 cols: each row a series; last tile of row 2 is the answer (needle)
+const rows = [
+  [c("bar","ink",46,0), c("bar","ink",46,30), c("bar","ink",46,60), c("bar","ink",46,90)],
+  [dots(1,"blue"), dots(2,"blue"), dots(3,"blue"), dots(4,"needle")],
+  [c("ring","ink",22), c("ring","ink",34), c("ring","ink",46), c("ring","ink",58)],
+];
+const ANS = [1,3];
+const tiles = rows.flatMap((row,ri)=>row.map((m,ci)=>{
+  const isAns = ri===ANS[0]&&ci===ANS[1];
+  const x = ci*(T+G), y = ri*(T+G), k = T/100;
+  const grads=`<g stroke="${C.line}" stroke-width="2" fill="none"><path d="M50 0v6"/><path d="M50 94v6"/><path d="M0 50h6"/><path d="M94 50h6"/></g>`;
+  const bw = isAns?2.5:1.5, bc = isAns?C.ink:C.line;
+  return `<g transform="translate(${x} ${y})"><rect x="${bw/2}" y="${bw/2}" width="${T-bw}" height="${T-bw}" rx="14" fill="${C.sheet}" stroke="${bc}" stroke-width="${bw}"/><g transform="scale(${k})">${grads}${m.map(shape).join("")}</g></g>`;
+})).join("");
+const GW = 4*T+3*G, GH = 3*T+2*G;
+const card = { type:"div", props:{ style:{ width:1200, height:630, display:"flex", position:"relative", backgroundColor:C.paper }, children:[
+  { type:"div", props:{ style:{ position:"absolute", left:84, top:236, display:"flex", flexDirection:"column" }, children:[
+    { type:"div", props:{ style:{ fontFamily:"Instrument Serif", fontSize:132, lineHeight:0.9, letterSpacing:-1.5, color:C.ink }, children:"Cadran" }},
+    { type:"div", props:{ style:{ marginTop:26, fontFamily:"Geist Mono", fontWeight:500, fontSize:20, color:C.muted }, children:"cadran.accura.dev" }},
+  ]}},
+]}};
+let svg = await satori(card,{width:1200,height:630,fonts});
+svg = svg.replace(/<\/svg>$/, `<g transform="translate(${1200-84-GW} ${(630-GH)/2})">${tiles}</g></svg>`);
+writeFileSync(`og-${VARIANT}.svg`, svg);
+const png = new Resvg(svg,{fitTo:{mode:"width",value:1200}}).render().asPng();
+writeFileSync(`og-${VARIANT}.png`, png);
+console.log(`og-${VARIANT}.png ${(png.length/1024).toFixed(1)} KB`);
