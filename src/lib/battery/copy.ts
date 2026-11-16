@@ -121,7 +121,7 @@ export const copy = {
       after: " — pas un diagnostic.",
     }),
     disclaimer:
-      "Même logique qu'un bilan en quatre axes, items originaux. Ce n'est pas le WAIS-IV et les scores ne sont pas étalonnés. Pour un vrai bilan, un psychologue.",
+      "Même logique qu'un bilan en quatre axes, items originaux. Une estimation maison, pas un bilan clinique : les scores ne sont pas étalonnés. Pour un vrai bilan, un psychologue.",
     totalNote: (n: number) => `Total ${n} min. Tu peux t'arrêter entre les blocs, la séance reste sur cet appareil.`,
     minutes: "min",
     resume: (title: string, left: number) => `Reprendre · ${title} · ${left} min`,
@@ -204,7 +204,7 @@ export const copy = {
       after: " — not a diagnosis.",
     }),
     disclaimer:
-      "Same four-axis logic, original items. This is not the WAIS-IV and the scores are not normed. For a real assessment, see a psychologist.",
+      "Same four-axis logic, original items. A homemade estimate, not a clinical assessment: the scores are not normed. For a real assessment, see a psychologist.",
     totalNote: (n: number) => `Total ${n} min. You can stop between blocks. The session stays on this device.`,
     minutes: "min",
     resume: (title: string, left: number) => `Resume · ${title} · ${left} min`,
