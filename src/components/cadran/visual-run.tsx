@@ -54,6 +54,13 @@ export function VisualRun({
   const [picked, setPicked] = useState<number | null>(null);
   const item = deck[index];
 
+  // Drop the highlight and keyboard lock when the item changes, so a
+  // chosen tile does not keep its frame on the next question.
+  useEffect(() => {
+    setPicked(null);
+    setLocked(false);
+  }, [index]);
+
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (!item || locked || e.repeat) return;
@@ -88,8 +95,13 @@ export function VisualRun({
   if (!item) return null;
 
   return (
-    <Shell kicker={kicker} title={title}
-      counter={`${index + 1} / ${deck.length}`} progress={progress} onPause={onPause}>
+    <Shell
+      kicker={kicker}
+      title={title}
+      counter={`${index + 1} / ${deck.length}`}
+      progress={progress}
+      onPause={onPause}
+    >
       <p className="text-muted">{lead}</p>
       {/* Series, matrix cells and options share FigureTile, so they always render at the same px size. */}
       {mode === "matrix" && item.cells && (
@@ -109,7 +121,7 @@ export function VisualRun({
       )}
       <p className="mt-7 font-medium text-ink">{t.whichFigure}</p>
       <p className="mt-1 text-sm text-muted">{t.keyPick}</p>
-      <div className="mt-4 grid w-fit grid-cols-2 gap-3">
+      <div key={item.id} className="mt-4 grid w-fit grid-cols-2 gap-3">
         {item.options.map((option, i) => {
           const letter = String.fromCharCode(65 + i);
           const selected = picked === i;
