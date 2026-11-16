@@ -6,19 +6,15 @@
     "ogLocale": "fr_FR",
     "title": "Cadran : test cognitif en ligne en 4 axes",
     "description": "Langage, formes, mémoire, rythme : quatre épreuves pour situer votre raisonnement. Une estimation maison, pas un bilan clinique.",
-    "ogImage": "/og-fr.png",
-    "ogImageAlt": "Cadran : un cadran à quatre axes, langage, formes, mémoire, rythme.",
-    "ogTagline": "Quatre épreuves pour se situer, sans pression.",
-    "ogAxes": ["LANGAGE", "FORMES", "MÉMOIRE", "RYTHME"]
+    "ogImage": "/og.png",
+    "ogImageAlt": "Cadran : un cadran à quatre axes."
   },
   "en": {
     "path": "/en",
     "ogLocale": "en_GB",
     "title": "Cadran: an online cognitive test in 4 areas",
     "description": "Language, shapes, memory, rhythm: four challenges to see where your reasoning stands. A homemade estimate, not a clinical assessment.",
-    "ogImage": "/og-en.png",
-    "ogImageAlt": "Cadran: a dial with four areas, language, shapes, memory, rhythm.",
-    "ogTagline": "Four short challenges to see where you stand.",
-    "ogAxes": ["LANGUAGE", "SHAPES", "MEMORY", "RHYTHM"]
+    "ogImage": "/og.png",
+    "ogImageAlt": "Cadran: a four-axis dial."
   }
 }

@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
- * Renders the share images public/og-fr.png and public/og-en.png (1200x630).
+ * Renders the share image public/og.png (1200x630).
  *
- * Layout from the art direction: paper background, "Cadran" in Instrument
- * Serif 128 and a Geist 34 tagline on the left, a flat dial with 60 ticks,
- * the four area labels and one needle on the right, the domain in Geist
- * Mono at the bottom left. No score, no number, no gradient.
+ * Language-neutral layout from the art direction: paper background, a large
+ * flat dial (sheet face, 60 ticks, four longer marks on the axes, one needle)
+ * on the left, the "Cadran" wordmark and the domain as a quiet caption on the
+ * right. No slogan, no area names, no score, no gradient.
  *
  * Satori lays the page out as SVG, resvg turns it into PNG. Both are dev
- * dependencies, so run `npm run og` and commit the PNGs when copy changes.
+ * dependencies, so run `npm run og` and commit the PNG when the layout changes.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -17,10 +17,10 @@ import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const seo = JSON.parse(readFileSync(join(root, "src/lib/seo.json"), "utf8"));
 
 const C = {
   paper: "#F4F2EC",
+  sheet: "#FFFFFF",
   ink: "#16181D",
   muted: "#5D626C",
   line: "#DCD8CF",
@@ -39,18 +39,6 @@ const fonts = [
     data: font("instrument-serif", "instrument-serif-latin-400-normal.woff"),
   },
   {
-    name: "Geist",
-    weight: 400,
-    style: "normal",
-    data: font("geist-sans", "geist-sans-latin-400-normal.woff"),
-  },
-  {
-    name: "Geist",
-    weight: 600,
-    style: "normal",
-    data: font("geist-sans", "geist-sans-latin-600-normal.woff"),
-  },
-  {
     name: "Geist Mono",
     weight: 500,
     style: "normal",
@@ -61,119 +49,93 @@ const fonts = [
 // Tiny hyperscript helper so the layout reads like JSX without a build step.
 const h = (type, style, children) => ({ type, props: { style, children } });
 
-/** The dial itself (no text): 380 px circle, 60 ticks, needle, centre dot. */
+function polar(c, r, deg) {
+  const a = (deg * Math.PI) / 180;
+  return [c + r * Math.sin(a), c - r * Math.cos(a)];
+}
+
+/** The dial (no text): 510 px, sheet face, 60 ticks, needle at 72°, centre cap. */
 function dialSvg() {
-  const size = 500;
+  const size = 510;
   const c = size / 2;
-  const r = 190;
-  const ticks = Array.from({ length: 60 }, (_, i) => {
-    const a = (i * 6 * Math.PI) / 180;
-    const major = i % 5 === 0;
-    const r1 = r - (major ? 30 : 20);
-    const r2 = r - 10;
-    const p = (rr) => [c + rr * Math.sin(a), c - rr * Math.cos(a)].map((n) => n.toFixed(2));
-    const [x1, y1] = p(r1);
-    const [x2, y2] = p(r2);
-    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
-  }).join("");
+  const r = size / 2 - 8;
+  const ticks = [];
+  for (let i = 0; i < 60; i++) {
+    const cardinal = i % 15 === 0;
+    const hour = i % 5 === 0;
+    const inner = cardinal ? r - 36 : hour ? r - 24 : r - 14;
+    const outer = r - 6;
+    const width = cardinal ? 3.2 : hour ? 2.2 : 1.5;
+    const color = hour ? C.ink : C.line;
+    const [x1, y1] = polar(c, inner, i * 6);
+    const [x2, y2] = polar(c, outer, i * 6);
+    ticks.push(
+      `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${color}" stroke-width="${width}" stroke-linecap="square"/>`,
+    );
+  }
+  const tip = r - 42;
+  const tail = 34;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
-  <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${C.ink}" stroke-width="3"/>
-  <g stroke="${C.line}" stroke-width="2">${ticks}</g>
-  <g transform="rotate(60 ${c} ${c})"><polygon points="${c},95 ${c + 3.8},${c} ${c},${c + 22} ${c - 3.8},${c}" fill="${C.needle}"/></g>
-  <circle cx="${c}" cy="${c}" r="7" fill="${C.ink}"/>
+  <circle cx="${c}" cy="${c}" r="${r}" fill="${C.sheet}" stroke="${C.ink}" stroke-width="3"/>
+  ${ticks.join("")}
+  <g transform="rotate(72 ${c} ${c})">
+    <polygon points="${c},${c - tip} ${c + 5.4},${c + 10} ${c + 3},${c + tail - 6} ${c},${c + tail} ${c - 3},${c + tail - 6} ${c - 5.4},${c + 10}" fill="${C.needle}"/>
+  </g>
+  <circle cx="${c}" cy="${c}" r="11" fill="${C.ink}"/>
 </svg>`;
 }
 
-function card(page) {
-  const label = (text, style) =>
-    h(
-      "div",
-      {
-        position: "absolute",
-        display: "flex",
-        justifyContent: "center",
-        width: 160,
-        fontFamily: "Geist",
-        fontWeight: 600,
-        fontSize: 18,
-        letterSpacing: 1.08,
-        color: C.muted,
-        ...style,
-      },
-      text,
-    );
-  const [top, right, bottom, left] = page.ogAxes;
+function card() {
+  const size = 510;
   const dial = "data:image/svg+xml;base64," + Buffer.from(dialSvg()).toString("base64");
 
   return h(
     "div",
     { width: 1200, height: 630, display: "flex", position: "relative", backgroundColor: C.paper },
     [
-      // Safe area: 1080x510 centred.
       h(
         "div",
-        { position: "absolute", left: 60, top: 60, width: 1080, height: 510, display: "flex" },
+        {
+          position: "absolute",
+          left: 70,
+          top: 60,
+          width: size,
+          height: size,
+          display: "flex",
+        },
+        [{ type: "img", props: { src: dial, width: size, height: size } }],
+      ),
+      h(
+        "div",
+        {
+          position: "absolute",
+          left: 640,
+          top: 248,
+          display: "flex",
+          flexDirection: "column",
+        },
         [
           h(
             "div",
             {
-              position: "absolute",
-              left: 0,
-              top: 0,
-              bottom: 0,
-              width: 520,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
+              fontFamily: "Instrument Serif",
+              fontSize: 92,
+              lineHeight: 0.9,
+              letterSpacing: -0.92,
+              color: C.ink,
             },
-            [
-              h(
-                "div",
-                {
-                  fontFamily: "Instrument Serif",
-                  fontSize: 128,
-                  lineHeight: 0.9,
-                  letterSpacing: -1.28,
-                  color: C.ink,
-                },
-                "Cadran",
-              ),
-              h(
-                "div",
-                {
-                  marginTop: 24,
-                  fontFamily: "Geist",
-                  fontSize: 34,
-                  lineHeight: 1.25,
-                  color: C.muted,
-                },
-                page.ogTagline,
-              ),
-            ],
+            "Cadran",
           ),
           h(
             "div",
             {
-              position: "absolute",
-              left: 0,
-              bottom: 0,
+              marginTop: 20,
               fontFamily: "Geist Mono",
               fontWeight: 500,
-              fontSize: 22,
+              fontSize: 18,
               color: C.muted,
             },
             "cadran.accura.dev",
-          ),
-          h(
-            "div",
-            { position: "absolute", right: 20, top: 5, width: 500, height: 500, display: "flex" },
-            [
-              { type: "img", props: { src: dial, width: 500, height: 500 } },
-              label(top, { left: 170, top: 100 }),
-              label(right, { left: 290, top: 239 }),
-              label(bottom, { left: 170, top: 378 }),
-              label(left, { left: 50, top: 239 }),
-            ],
           ),
         ],
       ),
@@ -181,11 +143,8 @@ function card(page) {
   );
 }
 
-for (const locale of ["fr", "en"]) {
-  const page = seo[locale];
-  const svg = await satori(card(page), { width: 1200, height: 630, fonts });
-  const png = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } }).render().asPng();
-  const out = join(root, "public", `og-${locale}.png`);
-  writeFileSync(out, png);
-  console.log(`${out} ${(png.length / 1024).toFixed(1)} KB`);
-}
+const svg = await satori(card(), { width: 1200, height: 630, fonts });
+const png = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } }).render().asPng();
+const out = join(root, "public", "og.png");
+writeFileSync(out, png);
+console.log(`${out} ${(png.length / 1024).toFixed(1)} KB`);

@@ -18,7 +18,8 @@ npm run dev        # http://localhost:8080
 npm test           # vitest
 npm run typecheck
 npm run lint
-npm run build      # also renders public/og-fr.png and public/og-en.png
+npm run og         # public/og.png
+npm run build
 ```
 
 ## Layout
@@ -26,4 +27,4 @@ npm run build      # also renders public/og-fr.png and public/og-en.png
 - `src/lib/battery/` items, scoring, copy (FR and EN)
 - `src/components/cadran/` screens and figure tiles
 - `src/lib/seo.ts` per-locale metadata
-- `scripts/og.mjs` share images, rendered from SVG
+- `scripts/og.mjs` language-neutral share image, rendered from SVG

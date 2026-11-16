@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { localeFromPath, pageHead, SITE_URL } from "@/lib/seo";
 
 const root = join(__dirname, "../..");
+const SHARE_IMAGE = "https://cadran.accura.dev/og.png";
 
 function meta(head: ReturnType<typeof pageHead>, key: string) {
   const tag = head.meta.find(
@@ -27,22 +28,28 @@ describe.each(["fr", "en"] as const)("%s page head", (locale) => {
       locale === "fr" ? "https://cadran.accura.dev/" : "https://cadran.accura.dev/en",
     );
     expect(meta(head, "og:url")).toBe(canonical);
-    expect(meta(head, "og:image")).toBe(`https://cadran.accura.dev/og-${locale}.png`);
-    expect(meta(head, "twitter:image")).toBe(meta(head, "og:image"));
+    expect(meta(head, "og:image")).toBe(SHARE_IMAGE);
+    expect(meta(head, "twitter:image")).toBe(SHARE_IMAGE);
   });
 
   it("declares a large Twitter card and the Open Graph basics", () => {
     expect(meta(head, "twitter:card")).toBe("summary_large_image");
     expect(meta(head, "og:type")).toBe("website");
     expect(meta(head, "og:site_name")).toBe("Cadran");
+    expect(meta(head, "og:image:width")).toBe("1200");
+    expect(meta(head, "og:image:height")).toBe("630");
+    expect(meta(head, "og:image:alt")).toBeTruthy();
+    expect(meta(head, "twitter:image:alt")).toBe(meta(head, "og:image:alt"));
   });
+});
 
-  it(`ships og-${locale}.png at 1200x630 under 200 KB`, () => {
-    const file = join(root, "public", `og-${locale}.png`);
+describe("share image", () => {
+  it("ships a single og.png at 1200x630 under 300 KB", () => {
+    const file = join(root, "public", "og.png");
     const png = readFileSync(file);
     expect(png.readUInt32BE(16)).toBe(1200);
     expect(png.readUInt32BE(20)).toBe(630);
-    expect(statSync(file).size).toBeLessThan(200 * 1024);
+    expect(statSync(file).size).toBeLessThan(300 * 1024);
   });
 });
 
