@@ -1,0 +1,133 @@
+import type { Choice } from "@/lib/battery/marks";
+
+export const SIMILITUDES_EN: Choice[] = [
+  {
+    id: "s1",
+    prompt: "Spoon and fork",
+    options: ["They live in a drawer", "They are used for eating", "They are often metal", "They are washed after a meal"],
+    answer: 1,
+    points: 1,
+  },
+  {
+    id: "s2",
+    prompt: "Lung and gill",
+    options: ["They sit in the belly", "They are muscles", "They are used for breathing", "They filter blood"],
+    answer: 2,
+    points: 1,
+  },
+  {
+    id: "s3",
+    prompt: "Map and model",
+    options: ["They fit in the hand", "They represent a place", "They are made of paper", "They are for traveling"],
+    answer: 1,
+    points: 1,
+  },
+  {
+    id: "s4",
+    prompt: "Thermometer and scale",
+    options: ["You find them in a kitchen", "They give you a number", "They are measuring instruments", "They are made of glass"],
+    answer: 2,
+    points: 2,
+  },
+  {
+    id: "s5",
+    prompt: "Debt and oath",
+    options: ["They are commitments", "They are sums of money", "They are emotions", "They are official documents"],
+    answer: 0,
+    points: 2,
+  },
+  {
+    id: "s6",
+    prompt: "Vaccine and rampart",
+    options: ["They belong to medicine", "They are temporary", "They are solid", "They protect"],
+    answer: 3,
+    points: 2,
+  },
+  {
+    id: "s7",
+    prompt: "Index and table of contents",
+    options: ["They sit at the end of a book", "They list only names", "They help you find information", "They are title pages"],
+    answer: 2,
+    points: 2,
+  },
+  {
+    id: "s8",
+    prompt: "Echo and reflection",
+    options: ["A sound-only phenomenon", "Something sent out that comes back", "An illusion", "Something weak"],
+    answer: 1,
+    points: 3,
+  },
+  {
+    id: "s9",
+    prompt: "Verdict and diagnosis",
+    options: ["A punishment", "A court ruling", "A medical opinion only", "A conclusion after examination"],
+    answer: 3,
+    points: 3,
+  },
+  {
+    id: "s10",
+    prompt: "Seed and hypothesis",
+    options: ["A starting point that can grow", "Something small", "An idea that is already science", "A natural element"],
+    answer: 0,
+    points: 3,
+  },
+];
+
+export const SENS_EN: Choice[] = [
+  {
+    id: "v1",
+    prompt: "Shortfall",
+    options: ["A liquid", "A lack", "A celebration", "A tool"],
+    answer: 1,
+    points: 1,
+  },
+  {
+    id: "v2",
+    prompt: "Equivocal",
+    options: ["Very clear", "Open to two readings", "Already proved", "About horses"],
+    answer: 1,
+    points: 1,
+  },
+  {
+    id: "v3",
+    prompt: "Taciturn",
+    options: ["Speaks very little", "Goes in circles", "Is late", "Avoids crowds"],
+    answer: 0,
+    points: 1,
+  },
+  {
+    id: "v4",
+    prompt: "Abrogate",
+    options: ["Repeat a law", "Sign an agreement", "Officially cancel a rule", "Make stricter"],
+    answer: 2,
+    points: 2,
+  },
+  {
+    id: "v5",
+    prompt: "Premise",
+    options: ["The conclusion of a reasoning", "A promise", "A proposition you start from", "A logic error"],
+    answer: 2,
+    points: 2,
+  },
+  {
+    id: "v6",
+    prompt: "Allegiance",
+    options: ["A military alliance", "A reduced sentence", "A loyalty that is owed", "A tree-lined path"],
+    answer: 2,
+    points: 2,
+  },
+  {
+    id: "v7",
+    prompt: "Contingent",
+    options: ["Required in every case", "Very numerous", "From another country", "Depends on the circumstances"],
+    answer: 3,
+    points: 2,
+  },
+  {
+    id: "v8",
+    prompt: "Dilatory",
+    options: ["Dilutes a liquid", "Meant to gain time", "Arrives too late", "Is generous"],
+    answer: 1,
+    points: 3,
+  },
+];

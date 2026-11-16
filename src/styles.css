@@ -1,0 +1,54 @@
+@import "tailwindcss";
+@import "@fontsource/fraunces/latin-500.css";
+@import "@fontsource/fraunces/latin-600.css";
+@import "@fontsource/outfit/latin-400.css";
+@import "@fontsource/outfit/latin-500.css";
+@import "@fontsource/outfit/latin-600.css";
+
+@theme {
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Outfit", "Avenir Next", system-ui, sans-serif;
+  --color-paper: #f4efe6;
+  --color-sheet: #fffcf7;
+  --color-ink: #1a1612;
+  --color-muted: #6f675e;
+  --color-line: #e4dcd0;
+  --color-copper: #c4622d;
+  --color-copper-soft: #f6e6da;
+  --color-moss: #2f7d52;
+  --color-moss-soft: #e4f2ea;
+  --color-miss: #a33b32;
+  --radius-card: 1.25rem;
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-paper);
+    color: var(--color-ink);
+    min-height: 100vh;
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  button:focus-visible,
+  [role="button"]:focus-visible {
+    outline: 2px solid var(--color-copper);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

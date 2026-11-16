@@ -1,0 +1,14 @@
+node_modules
+dist
+.output
+.vinxi
+.tanstack
+.vercel
+.grok
+screenshots
+artifacts
+.project_id
+*.log
+.env
+.env.*
+!.env.example
