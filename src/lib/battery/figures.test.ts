@@ -5,6 +5,30 @@ import { MATRICES, SUITES, type Mark } from "@/lib/battery/marks";
 const MIN_SHAPE = 12;
 const MIN_SIZE_GAP = 10;
 
+// Rotation after which each shape looks the same again.
+const SYMMETRY: Record<Mark["kind"], number> = {
+  circle: 1,
+  ring: 1,
+  dot: 1,
+  bar: 180,
+  square: 90,
+  diamond: 90,
+  plus: 90,
+  triangle: 360,
+};
+
+/** What the tile shows on screen: two options with the same key look identical. */
+function looks(marks: Mark[]): string {
+  return marks
+    .map((m) => {
+      const period = SYMMETRY[m.kind];
+      const rot = period === 1 ? 0 : (((m.rot ?? 0) % period) + period) % period;
+      return `${m.kind}:${m.tone}:${m.cx}:${m.cy}:${m.s}:${rot}`;
+    })
+    .sort()
+    .join("|");
+}
+
 function allMarks(groups: (Mark[] | null)[]): Mark[] {
   return groups.flatMap((group) => group ?? []);
 }
@@ -32,6 +56,24 @@ describe("SUITES figures", () => {
       }
     });
   }
+});
+
+describe("options look different from each other", () => {
+  const items = [
+    ...SUITES.map((item) => ({ id: item.id, options: item.options })),
+    ...MATRICES.map((item) => ({ id: item.id, options: item.options })),
+  ];
+  for (const item of items) {
+    it(`${item.id}: no two options look the same`, () => {
+      const seen = item.options.map((option) => looks(option ?? []));
+      expect(new Set(seen).size).toBe(seen.length);
+    });
+  }
+
+  it("catches a half-turned bar as a duplicate", () => {
+    const bar = (rot: number): Mark[] => [{ kind: "bar", tone: "ink", cx: 50, cy: 50, s: 46, rot }];
+    expect(looks(bar(180))).toBe(looks(bar(0)));
+  });
 });
 
 describe("MATRICES figures", () => {

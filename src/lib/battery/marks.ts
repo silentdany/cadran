@@ -478,11 +478,13 @@ export const SUITES: SuiteItem[] = [
       [center("bar", "ink", 46, 90)],
       [center("bar", "ink", 46, 135)],
     ],
+    // A bar looks the same after a half turn, so the answer (180°) is drawn at 0°
+    // and no other option may be horizontal.
     options: [
       [center("bar", "ink", 46, 90)],
-      [center("bar", "ink", 46, 180)],
-      [center("bar", "ink", 46, 135)],
       [center("bar", "ink", 46, 0)],
+      [center("bar", "ink", 46, 135)],
+      [center("bar", "ink", 46, 45)],
     ],
     answer: 1,
   },
