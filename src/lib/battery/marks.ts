@@ -63,7 +63,7 @@ export function barWithDots(rot: number, n: number): Mark[] {
   const xs = n === 1 ? [50] : n === 2 ? [38, 62] : [26, 50, 74];
   return [
     { kind: "bar", tone: "ink", cx: 50, cy: 40, s: 46, rot },
-    ...xs.map((cx) => ({ kind: "dot" as const, tone: "copper" as const, cx, cy: 76, s: 10 })),
+    ...xs.map((cx) => ({ kind: "dot" as const, tone: "copper" as const, cx, cy: 76, s: 12 })),
   ];
 }
 
@@ -505,17 +505,18 @@ export const SUITES: SuiteItem[] = [
   {
     id: "q4",
     points: 2,
+    // Steps of 10 units: smaller steps cannot be told apart at 72 px.
     frames: [
-      [center("square", "ink", 18)],
-      [center("square", "ink", 26)],
+      [center("square", "ink", 14)],
+      [center("square", "ink", 24)],
       [center("square", "ink", 34)],
-      [center("square", "ink", 42)],
+      [center("square", "ink", 44)],
     ],
     options: [
-      [center("square", "ink", 42)],
+      [center("square", "ink", 44)],
       [center("square", "ink", 34)],
-      [center("circle", "ink", 50)],
-      [center("square", "ink", 50)],
+      [center("circle", "ink", 54)],
+      [center("square", "ink", 54)],
     ],
     answer: 3,
   },
