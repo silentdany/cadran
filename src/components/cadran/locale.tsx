@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { copy, type Copy, type Locale } from "@/lib/battery/copy";
-
-const KEY = "cadran-locale";
+import seo from "@/lib/seo.json";
 
 const LocaleContext = createContext<{
   locale: Locale;
@@ -13,21 +12,23 @@ const LocaleContext = createContext<{
   t: copy.fr,
 });
 
-export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("fr");
-
-  useEffect(() => {
-    const saved = window.localStorage.getItem(KEY);
-    if (saved === "en" || saved === "fr") setLocaleState(saved);
-  }, []);
+/**
+ * The route picks the starting locale ("/" is French, "/en" is English).
+ * Switching language mid-session keeps the session on screen: we swap the
+ * copy in place and only rewrite the URL, lang and title, without a router
+ * navigation that would remount the app.
+ */
+export function LocaleProvider({ locale: initial, children }: { locale: Locale; children: ReactNode }) {
+  const [locale, setLocaleState] = useState<Locale>(initial);
 
   useEffect(() => {
     document.documentElement.lang = locale;
+    document.title = seo[locale].title;
   }, [locale]);
 
   function setLocale(next: Locale) {
     setLocaleState(next);
-    window.localStorage.setItem(KEY, next);
+    window.history.replaceState(window.history.state, "", seo[next].path);
   }
 
   return <LocaleContext.Provider value={{ locale, setLocale, t: copy[locale] }}>{children}</LocaleContext.Provider>;
